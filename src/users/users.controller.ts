@@ -122,7 +122,7 @@ export class UsersController {
     }
   }
 
-  @Get('/verifyPin')
+  @Post('/verifyPin')
   @SkipAdmin()
   async verifyPin(@Body() body, @Req() req, @Res() res) {
     if (!req.user) {
