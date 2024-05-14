@@ -116,6 +116,7 @@ export class UsersController {
       return res.header('auth-token', token).json({
         responseMessage: 'الكارت صالح',
         responseCode: 200,
+        token: token
       });
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
