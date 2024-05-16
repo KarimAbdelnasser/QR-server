@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
@@ -24,6 +26,7 @@ import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
 import * as jwt from 'jsonwebtoken';
 import { AuthService } from './auth.service';
+import { authenticator } from 'otplib';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -34,37 +37,101 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
+  // * ADMIN Routes
   @Post('/createCard')
   // @SkipAdmin() // TODO remove it when production
   @UseGuards(AdminAuthGuard) // TODO active in production
-  async createCard(@Body() body: CreateUserDto, @Res() res) {
+  async createCard(@Body() body: CreateUserDto, @Res() res, @Req() req) {
+    const existUser = await this.usersService.findOneByEmail(req.body.email);
+
+    if (existUser) {
+      throw new ConflictException('email in use!');
+    }
+
+    let secretKey;
+    let existSecretKey;
+
+    do {
+      secretKey = await this.qrService.generateSecretKey();
+      existSecretKey = await this.usersService.findOneBySecret(secretKey);
+    } while (existSecretKey);
+
+    const qrCode = await this.qrService.generateQRCode(body.email, secretKey);
+
     const { user, token } = await this.usersService.create(
       body.userName,
       body.email,
-      body.pin,
+      secretKey,
+      body.isVerified,
     );
 
-    const url = `${config.url}/user/scan?credentials=${token}`;
-
-    const qrCode = await this.qrService.generateQRCode(url);
-
     const qrCodeString = qrCode.toString('base64');
-    await this.usersService.saveQr(qrCodeString, url, String(user.id));
+
+    await this.qrService.saveQr(qrCodeString, String(user.id), token);
 
     res.header('auth-token', token).json({
       userName: `${user.userName}`,
       cardNumber: `${user.cardNumber}`,
-      url: url,
+      qrCode: qrCode,
     });
   }
 
-  @Patch('/deactivate/:cardNumber')
+  @Post('/activateUser')
   // @SkipAdmin() // TODO remove it when production
   @UseGuards(AdminAuthGuard) // TODO active in production
-  async deactivateUser(@Param('cardNumber') cardNumber: number, @Res() res) {
+  async verifyUser(@Body() body, @Res() res) {
+    const email = body.email;
+
+    const user = await this.usersService.findOneByEmail(email);
+
+    if (!user) {
+      return res.status(400).json({
+        responseMessage: 'User not found',
+        responseCode: 400,
+      });
+    }
+    if (user.isVerified) {
+      throw new BadRequestException('User is already activated');
+    }
+
+    user.isVerified = true;
+
+    await user.save();
+
+    const token = await this.authService.generateScanJwtToken(
+      user.id,
+      user.isVerified,
+      user.isAdmin,
+    );
+
+    await this.qrService.updateQr(user.id.toString(), token);
+
+    return res.json({
+      responseMessage: 'تم تفعيل الكارت',
+      responseCode: 200,
+      token: token,
+    });
+  }
+
+  @Patch('/deactivate')
+  // @SkipAdmin() // TODO remove it when production
+  @UseGuards(AdminAuthGuard) // TODO active in production
+  async deactivateUser(@Body() body, @Res() res) {
     try {
-      const deactivatedUser =
-        await this.usersService.deactivateCard(cardNumber);
+      const deactivatedUser = await this.usersService.deactivateCard(
+        body.email,
+      );
+
+      const user = await this.usersService.findOneByEmail(body.email);
+
+      const token = await this.authService.generateScanJwtToken(
+        user.id,
+        user.isVerified,
+        user.isAdmin,
+      );
+
+      await this.qrService.updateQr(user.id.toString(), token);
+
       return res.json({
         responseMessage: 'User deactivated successfully',
         responseCode: 200,
@@ -82,6 +149,7 @@ export class UsersController {
     }
   }
 
+  // * User Routes
   @Get('/scan')
   @SkipAdmin()
   async scanQr(
@@ -116,36 +184,70 @@ export class UsersController {
       return res.header('auth-token', token).json({
         responseMessage: 'الكارت صالح',
         responseCode: 200,
-        token: token
+        token: token,
       });
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }
   }
 
-  @Post('/verifyPin')
+  @Post('/verifyCard')
   @SkipAdmin()
-  async verifyPin(@Body() body, @Req() req, @Res() res) {
-    if (!req.user) {
-      throw new UnauthorizedException('Unauthorized: Missing user token');
+  async verifyPin(@Body() body, @Res() res) {
+    const enteredOtp = body.otp;
+
+    const email = body.email;
+
+    const user = await this.usersService.findOneByEmail(email);
+
+    if (!user) {
+      return res.status(400).json({
+        responseMessage: 'User not found',
+        responseCode: 400,
+      });
     }
 
-    const userId = req.user._id;
+    if (!user.isVerified) {
+      return res.status(401).json({
+        responseMessage: 'User not verified!',
+        responseCode: 401,
+      });
+    }
 
-    const enteredPin = body.pin;
+    const secretKey = user.secretKey;
 
-    const user = await this.usersService.findOne(userId);
+    const isValidOTP = authenticator.verify({
+      token: enteredOtp,
+      secret: secretKey,
+    });
 
-    const compare = await this.authService.comparePin(enteredPin, user.pin);
+    if (isValidOTP) {
+      const token = await this.authService.generateAppJwtToken(
+        user.id,
+        user.isVerified,
+        user.isAdmin,
+      );
 
-    if (compare) {
+      const usedOtp = await this.usersService.usedOtp(user.id, enteredOtp);
+
+      if (usedOtp) {
+        return res.status(400).json({
+          responseMessage:
+            'الرقم الذي أدخلته تم استخدامه حاول مرة اخري برقم اخر',
+          responseCode: 400,
+        });
+      }
+
+      await this.usersService.saveOtp(user.id, enteredOtp);
+
       return res.json({
-        responseMessage: 'الرقم الذي أدخلته مطابق جاري إعاده توجيهك',
+        responseMessage: 'الرقم الذي أدخلته صالح',
         responseCode: 200,
+        token: token,
       });
     } else {
       return res.status(400).json({
-        responseMessage: 'الرقم الذي أدخلته غير مطابق',
+        responseMessage: 'الرقم الذي أدخلته غير صالح',
         responseCode: 400,
       });
     }

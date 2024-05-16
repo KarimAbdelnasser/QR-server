@@ -9,8 +9,8 @@ export class User extends Document {
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
-  pin: string;
+  @Prop()
+  otp: Array<string>;
 
   @Prop({ required: true })
   cardNumber: number;
@@ -20,6 +20,9 @@ export class User extends Document {
 
   @Prop({ default: false })
   isAdmin: boolean;
+
+  @Prop()
+  secretKey: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,394 +1,383 @@
 {
-  "name": "QRApp Collection",
-  "version": "1",
-  "items": [
+  "info": {
+    "_postman_id": "f4374d10-596b-4bc9-850c-e038879ae2b5",
+    "name": "QRApp Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16667387"
+  },
+  "item": [
     {
-      "type": "json",
-      "name": "bruno",
-      "seq": 1
-    },
-    {
-      "type": "folder",
       "name": "offer",
-      "items": [
+      "item": [
         {
-          "type": "http",
-          "name": "Add offers",
-          "seq": 1,
-          "request": {
-            "url": "{{url}}/offer/addMany",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"offers\": [\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Nike apparel and footwear.\",\n      \"expiresAt\": \"2024-05-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Nike shoes.\",\n      \"expiresAt\": \"2024-05-15\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on selected Nike products.\",\n      \"expiresAt\": \"2024-05-20\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Samsung\",\n      \"offerPercentage\": 12,\n      \"offerDescription\": \"12% off on all Samsung smartphones.\",\n      \"expiresAt\": \"2024-06-01\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Samsung\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Samsung TVs.\",\n      \"expiresAt\": \"2024-06-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"McDonald's\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all McDonald's meals.\",\n      \"expiresAt\": \"2024-06-30\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Adidas\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all Adidas shoes and apparel.\",\n      \"expiresAt\": \"2024-07-10\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Apple\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on selected Apple products.\",\n      \"expiresAt\": \"2024-07-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Burger King\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Burger King meals.\",\n      \"expiresAt\": \"2024-07-20\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Zara\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Zara clothing and accessories.\",\n      \"expiresAt\": \"2024-08-01\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Gold's Gym\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on Gold's Gym annual membership.\",\n      \"expiresAt\": \"2024-08-15\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Gold's Gym\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"25% off on personal training sessions at Gold's Gym.\",\n      \"expiresAt\": \"2024-08-30\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"H&M\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all H&M clothing.\",\n      \"expiresAt\": \"2024-09-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"H&M\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all H&M accessories.\",\n      \"expiresAt\": \"2024-09-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Subway\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Subway sandwiches.\",\n      \"expiresAt\": \"2024-09-30\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Sony\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Sony cameras and audio systems.\",\n      \"expiresAt\": \"2024-10-10\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Sony\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Sony headphones.\",\n      \"expiresAt\": \"2024-10-15\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Planet Fitness\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on Planet Fitness membership.\",\n      \"expiresAt\": \"2024-10-31\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Planet Fitness\",\n      \"offerPercentage\": 30,\n      \"offerDescription\": \"30% off on Planet Fitness annual membership.\",\n      \"expiresAt\": \"2024-11-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Starbucks\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Starbucks beverages.\",\n      \"expiresAt\": \"2024-11-30\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Microsoft\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Microsoft software and accessories.\",\n      \"expiresAt\": \"2024-12-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Gap\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"Huge sale: Get 25% off on all Gap clothing.\",\n      \"expiresAt\": \"2024-12-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Pizza Hut\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"Special offer: Buy one pizza, get one free at Pizza Hut.\",\n      \"expiresAt\": \"2024-12-31\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Anytime Fitness\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on Anytime Fitness annual membership.\",\n      \"expiresAt\": \"2025-01-10\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Best Buy\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"Special offer: 10% off on selected Best Buy electronics.\",\n      \"expiresAt\": \"2025-01-15\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Calvin Klein\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"Big sale: Get 25% off on all Calvin Klein apparel.\",\n      \"expiresAt\": \"2025-01-31\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Wendy's\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Wendy's burgers and meals.\",\n      \"expiresAt\": \"2025-02-10\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"LA Fitness\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on LA Fitness annual membership.\",\n      \"expiresAt\": \"2025-02-15\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Lenovo\",\n      \"offerPercentage\": 18,\n      \"offerDescription\": \"18% off on all Lenovo laptops and tablets.\",\n      \"expiresAt\": \"2025-02-28\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Under Armour\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all Under Armour sports apparel.\",\n      \"expiresAt\": \"2025-03-10\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Dunkin' Donuts\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"Special offer: Buy one donut, get one free at Dunkin' Donuts.\",\n      \"expiresAt\": \"2025-03-15\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Equinox\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"25% off on Equinox annual membership.\",\n      \"expiresAt\": \"2025-03-31\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"GoPro\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all GoPro action cameras and accessories.\",\n      \"expiresAt\": \"2025-04-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"H&M\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all H&M clothing and accessories.\",\n      \"expiresAt\": \"2025-04-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Chipotle\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Chipotle burritos and bowls.\",\n      \"expiresAt\": \"2025-04-30\"\n    }\n  ]\n}\n",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
+          "name": "ADMIN ONLY",
+          "item": [
+            {
+              "name": "Add offers",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "auth-token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
+                    "type": "default"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"offers\": [\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Nike apparel and footwear.\",\n      \"expiresAt\": \"2024-05-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Nike shoes.\",\n      \"expiresAt\": \"2024-05-15\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on selected Nike products.\",\n      \"expiresAt\": \"2024-05-20\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Samsung\",\n      \"offerPercentage\": 12,\n      \"offerDescription\": \"12% off on all Samsung smartphones.\",\n      \"expiresAt\": \"2024-06-01\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Samsung\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Samsung TVs.\",\n      \"expiresAt\": \"2024-06-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"McDonald's\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all McDonald's meals.\",\n      \"expiresAt\": \"2024-06-30\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Adidas\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all Adidas shoes and apparel.\",\n      \"expiresAt\": \"2024-07-10\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Apple\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on selected Apple products.\",\n      \"expiresAt\": \"2024-07-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Burger King\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Burger King meals.\",\n      \"expiresAt\": \"2024-07-20\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Zara\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Zara clothing and accessories.\",\n      \"expiresAt\": \"2024-08-01\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Gold's Gym\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on Gold's Gym annual membership.\",\n      \"expiresAt\": \"2024-08-15\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Gold's Gym\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"25% off on personal training sessions at Gold's Gym.\",\n      \"expiresAt\": \"2024-08-30\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"H&M\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all H&M clothing.\",\n      \"expiresAt\": \"2024-09-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"H&M\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all H&M accessories.\",\n      \"expiresAt\": \"2024-09-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Subway\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Subway sandwiches.\",\n      \"expiresAt\": \"2024-09-30\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Sony\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Sony cameras and audio systems.\",\n      \"expiresAt\": \"2024-10-10\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Sony\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Sony headphones.\",\n      \"expiresAt\": \"2024-10-15\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Planet Fitness\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on Planet Fitness membership.\",\n      \"expiresAt\": \"2024-10-31\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Planet Fitness\",\n      \"offerPercentage\": 30,\n      \"offerDescription\": \"30% off on Planet Fitness annual membership.\",\n      \"expiresAt\": \"2024-11-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Starbucks\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all Starbucks beverages.\",\n      \"expiresAt\": \"2024-11-30\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Microsoft\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Microsoft software and accessories.\",\n      \"expiresAt\": \"2024-12-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Gap\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"Huge sale: Get 25% off on all Gap clothing.\",\n      \"expiresAt\": \"2024-12-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Pizza Hut\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"Special offer: Buy one pizza, get one free at Pizza Hut.\",\n      \"expiresAt\": \"2024-12-31\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Anytime Fitness\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on Anytime Fitness annual membership.\",\n      \"expiresAt\": \"2025-01-10\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Best Buy\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"Special offer: 10% off on selected Best Buy electronics.\",\n      \"expiresAt\": \"2025-01-15\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Calvin Klein\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"Big sale: Get 25% off on all Calvin Klein apparel.\",\n      \"expiresAt\": \"2025-01-31\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Wendy's\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Wendy's burgers and meals.\",\n      \"expiresAt\": \"2025-02-10\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"LA Fitness\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on LA Fitness annual membership.\",\n      \"expiresAt\": \"2025-02-15\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"Lenovo\",\n      \"offerPercentage\": 18,\n      \"offerDescription\": \"18% off on all Lenovo laptops and tablets.\",\n      \"expiresAt\": \"2025-02-28\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Under Armour\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all Under Armour sports apparel.\",\n      \"expiresAt\": \"2025-03-10\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Dunkin' Donuts\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"Special offer: Buy one donut, get one free at Dunkin' Donuts.\",\n      \"expiresAt\": \"2025-03-15\"\n    },\n    {\n      \"category\": \"صالات الألعاب الرياضية\",\n      \"categoryNumber\": 4,\n      \"offerName\": \"Equinox\",\n      \"offerPercentage\": 25,\n      \"offerDescription\": \"25% off on Equinox annual membership.\",\n      \"expiresAt\": \"2025-03-31\"\n    },\n    {\n      \"category\": \"الإلكترونيات\",\n      \"categoryNumber\": 2,\n      \"offerName\": \"GoPro\",\n      \"offerPercentage\": 15,\n      \"offerDescription\": \"15% off on all GoPro action cameras and accessories.\",\n      \"expiresAt\": \"2025-04-10\"\n    },\n    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"H&M\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on all H&M clothing and accessories.\",\n      \"expiresAt\": \"2025-04-15\"\n    },\n    {\n      \"category\": \"المطاعم و الكافيهات\",\n      \"categoryNumber\": 3,\n      \"offerName\": \"Chipotle\",\n      \"offerPercentage\": 10,\n      \"offerDescription\": \"10% off on all Chipotle burritos and bowls.\",\n      \"expiresAt\": \"2025-04-30\"\n    }\n  ]\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/offer/addMany",
+                  "host": ["{{url}}"],
+                  "path": ["offer", "addMany"]
+                }
               },
-              "bearer": {
-                "token": ""
-              }
+              "response": []
             },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
+            {
+              "name": "Add offer",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "auth-token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
+                    "type": "default"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on selected Nike products.\",\n      \"expiresAt\":\"2024-05-07T17:39:04.636+00:00\"\n    }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/offer/addOne",
+                  "host": ["{{url}}"],
+                  "path": ["offer", "addOne"]
+                }
+              },
+              "response": []
+            }
+          ]
         },
         {
-          "type": "http",
-          "name": "Add offer",
-          "seq": 2,
-          "request": {
-            "url": "{{url}}/offer/addOne",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "    {\n      \"category\": \"الأزياء\",\n      \"categoryNumber\": 1,\n      \"offerName\": \"Nike\",\n      \"offerPercentage\": 20,\n      \"offerDescription\": \"20% off on selected Nike products.\",\n      \"expiresAt\":\"2024-05-07T17:39:04.636+00:00\"\n    }",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
-        },
-        {
-          "type": "http",
           "name": "Get categories",
-          "seq": 3,
           "request": {
-            "url": "{{url}}/offer/categories",
             "method": "GET",
-            "headers": [
+            "header": [
               {
-                "name": "auth-token",
+                "key": "auth-token",
                 "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
+                "type": "default"
               }
             ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
+            "url": {
+              "raw": "{{url}}/offer/categories",
+              "host": ["{{url}}"],
+              "path": ["offer", "categories"]
+            }
+          },
+          "response": []
         },
         {
-          "type": "http",
-          "name": "Get offers",
-          "seq": 4,
+          "name": "Get brands",
           "request": {
-            "url": "{{url}}/offer/getOffers?limit=2",
             "method": "GET",
-            "headers": [
+            "header": [
               {
-                "name": "auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
+                "key": "auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjQ0ZmJlMTdlODBjNzMyMjQ2MDZlNGEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1Nzk5MTMzLCJleHAiOjE3MTU4MDI3MzN9.RZpmDRMJP0bGWO8NiMxuiJI3wkCZyVEkdMFT9fJfgQ4",
+                "type": "default"
               }
             ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": [
-              {
-                "name": "limit",
-                "value": "2",
-                "enabled": true
-              }
-            ]
-          }
+            "url": {
+              "raw": "{{url}}/offer/brands?category=10",
+              "host": ["{{url}}"],
+              "path": ["offer", "brands"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
         },
         {
-          "type": "http",
-          "name": "Get offers by category name",
-          "seq": 5,
-          "request": {
-            "url": "{{url}}/offer/getByCategory?category=الأزياء&limit=2",
-            "method": "GET",
-            "headers": [
-              {
-                "name": "auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": [
-              {
-                "name": "category",
-                "value": "الأزياء",
-                "enabled": true
-              },
-              {
-                "name": "limit",
-                "value": "2",
-                "enabled": true
-              }
-            ]
-          }
-        },
-        {
-          "type": "http",
           "name": "Get offers by brand",
-          "seq": 6,
           "request": {
-            "url": "{{url}}/offer/getByBrand?brand=Sony&limit=1",
             "method": "GET",
-            "headers": [
+            "header": [
               {
-                "name": "auth-token",
+                "key": "auth-token",
                 "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
+                "type": "default"
               }
             ],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": [
-              {
-                "name": "brand",
-                "value": "Sony",
-                "enabled": true
-              },
-              {
-                "name": "limit",
-                "value": "1",
-                "enabled": true
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "type": "folder",
-      "name": "qr",
-      "items": [
-        {
-          "type": "http",
-          "name": "Verify PIN",
-          "seq": 2,
-          "request": {
-            "url": "{{url}}/user/verifyPin",
-            "method": "POST",
-            "headers": [
-              {
-                "name": "auth-token",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
-                "enabled": true
-              }
-            ],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"pin\":\"1234\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
+            "url": {
+              "raw": "{{url}}/offer/getByBrand?brand=Sony&limit=1",
+              "host": ["{{url}}"],
+              "path": ["offer", "getByBrand"],
+              "query": [
+                {
+                  "key": "brand",
+                  "value": "Sony"
+                },
+                {
+                  "key": "limit",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
         },
         {
-          "type": "http",
-          "name": "scan QR code",
-          "seq": 1,
+          "name": "Get offers by category name",
           "request": {
-            "url": "http://localhost:8080/user/scan?credentials=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAyOTc4fQ.KHXiUuY2RmTCB2S4h82z5MSeeN8BX8-wpv75a-AW5GY",
             "method": "GET",
-            "headers": [],
-            "body": {
-              "mode": "none",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
-              },
-              "bearer": {
-                "token": ""
-              }
-            },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": [
+            "header": [
               {
-                "name": "credentials",
-                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAyOTc4fQ.KHXiUuY2RmTCB2S4h82z5MSeeN8BX8-wpv75a-AW5GY",
-                "enabled": true
+                "key": "auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
+                "type": "default"
               }
-            ]
-          }
+            ],
+            "url": {
+              "raw": "{{url}}/offer/getByCategory?category=الأزياء&limit=2",
+              "host": ["{{url}}"],
+              "path": ["offer", "getByCategory"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "الأزياء"
+                },
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get offers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
+                "type": "default"
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/offer/getOffers?limit=2",
+              "host": ["{{url}}"],
+              "path": ["offer", "getOffers"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
-      "type": "folder",
-      "name": "user",
-      "items": [
+      "name": "qr",
+      "item": [
         {
-          "type": "http",
-          "name": "Create new card",
-          "seq": 1,
-          "request": {
-            "url": "{{url}}/user/createCard",
-            "method": "POST",
-            "headers": [],
-            "body": {
-              "mode": "json",
-              "json": "{\n  \"userName\":\"Karim\",\n  \"pin\":1234,\n  \"email\":\"karim@example2.com\"\n}",
-              "formUrlEncoded": [],
-              "multipartForm": []
-            },
-            "auth": {
-              "mode": "none",
-              "basic": {
-                "username": "",
-                "password": ""
+          "name": "ADMIN ONLY",
+          "item": [
+            {
+              "name": "Get all QRs",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "auth-token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhOTA4ZGE2YTE3MWJiMzAwMjhlM2UiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTU3OTYyNzMsImV4cCI6MTcxNTc5OTg3M30.l1NzQsbH-rWCKnVWiT0OLbDipZeflHxLYzmPUQYcMw0",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/qr/getAll",
+                  "host": ["{{url}}"],
+                  "path": ["qr", "getAll"]
+                }
               },
-              "bearer": {
-                "token": ""
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Verify card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "auth-token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjQ0ZmJlMTdlODBjNzMyMjQ2MDZlNGEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1Nzk5MTMzLCJleHAiOjE3MTU4MDI3MzN9.RZpmDRMJP0bGWO8NiMxuiJI3wkCZyVEkdMFT9fJfgQ4",
+                "type": "default"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\":\"moSalah3@example.com\",\n  \"otp\":\"941414\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
               }
             },
-            "script": {},
-            "vars": {},
-            "assertions": [],
-            "tests": "",
-            "query": []
-          }
+            "url": {
+              "raw": "{{url}}/user/verifyCard",
+              "host": ["{{url}}"],
+              "path": ["user", "verifyCard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "scan QR code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/user/scan?credentials=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjQ0ZmJlMTdlODBjNzMyMjQ2MDZlNGEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1Nzk5MTA1fQ.-CtaDhonXQlrRmYE2kSpB98d_EIvo9DnBF6EtjFo-Os",
+              "host": ["{{url}}"],
+              "path": ["user", "scan"],
+              "query": [
+                {
+                  "key": "credentials",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjQ0ZmJlMTdlODBjNzMyMjQ2MDZlNGEiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1Nzk5MTA1fQ.-CtaDhonXQlrRmYE2kSpB98d_EIvo9DnBF6EtjFo-Os"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "ADMIN ONLY",
+          "item": [
+            {
+              "name": "Create new card",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "auth-token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhOTA4ZGE2YTE3MWJiMzAwMjhlM2UiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTU3OTY1NTIsImV4cCI6MTcxNTgwMDE1Mn0.gJCNlWz1DXfeCouycuPVYpDRAcRJqdosXjyGAMt84S4",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"moSalah3@example.com\"\n    }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/user/createCard",
+                  "host": ["{{url}}"],
+                  "path": ["user", "createCard"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Activate user",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "auth-token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhOTA4ZGE2YTE3MWJiMzAwMjhlM2UiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTU3OTY1NTIsImV4cCI6MTcxNTgwMDE1Mn0.gJCNlWz1DXfeCouycuPVYpDRAcRJqdosXjyGAMt84S4",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"moSalah3@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/user/activateUser",
+                  "host": ["{{url}}"],
+                  "path": ["user", "activateUser"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Deactivate user",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "auth-token",
+                    "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhOTA4ZGE2YTE3MWJiMzAwMjhlM2UiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTU3OTY1NTIsImV4cCI6MTcxNTgwMDE1Mn0.gJCNlWz1DXfeCouycuPVYpDRAcRJqdosXjyGAMt84S4",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\":\"moSalah3@example.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/user/deactivate",
+                  "host": ["{{url}}"],
+                  "path": ["user", "deactivate"]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     }
   ],
-  "activeEnvironmentUid": "ZMKYbidxQbQhqusyZNaBq",
-  "environments": [
+  "variable": [
     {
-      "variables": [
-        {
-          "name": "url",
-          "value": "http://localhost:8080",
-          "enabled": true,
-          "secret": false,
-          "type": "text"
-        }
-      ],
-      "name": "qr env"
+      "key": "url",
+      "value": "",
+      "type": "default"
     }
   ]
 }

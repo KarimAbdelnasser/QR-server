@@ -36,9 +36,19 @@ export class OffersService {
         offerDescription,
         expiresAt: expiresAtDate,
       });
-      return await newOffer.save();
+
+      const savedOffer = await newOffer.save();
+
+      logger.info(
+        `[addOffer] New offer added successfully with id: ${savedOffer._id}`,
+      );
+
+      return savedOffer;
     } catch (error) {
-      logger.error(`Error adding offer: ${(error as Error).message}`);
+      logger.error(
+        `[addOffer] Error adding offer: ${(error as Error).message}`,
+      );
+
       throw new InternalServerErrorException(
         `Could not add offer: ${(error as Error).message}`,
       );
@@ -48,10 +58,17 @@ export class OffersService {
   async addOffers(userId: string, offers: Offer[]): Promise<Offer[]> {
     try {
       offers.forEach((offer) => (offer.userId = userId));
+
       const createdOffers = await this.offerModel.insertMany(offers);
+
+      logger.info(`[addOffers] ${offers.length} offers added successfully`);
+
       return createdOffers;
     } catch (error) {
-      logger.error(`Error adding offers: ${(error as Error).message}`);
+      logger.error(
+        `[addOffers] Error adding offers: ${(error as Error).message}`,
+      );
+
       throw new InternalServerErrorException(
         `Could not add offers: ${(error as Error).message}`,
       );
@@ -61,10 +78,43 @@ export class OffersService {
   async getAllCategories(): Promise<string[]> {
     try {
       const categories = await this.offerModel.distinct('category').exec();
+
+      logger.info(`[getAllCategories] Retrieved all categories: ${categories}`);
+
       return categories;
     } catch (error) {
+      logger.error(
+        `[getAllCategories] Error fetching categories: ${(error as Error).message}`,
+      );
+
       throw new InternalServerErrorException(
         `Error fetching categories: ${(error as Error).message}`,
+      );
+    }
+  }
+
+  async getAllBrands(categoryNumber: number): Promise<string[]> {
+    try {
+      const brands = await this.offerModel
+        .distinct('offerName', { categoryNumber })
+        .exec();
+
+      if (!brands.length) {
+        throw new NotFoundException(
+          'There are no category available with this category number!',
+        );
+      }
+
+      logger.info(`[getAllBrands] Retrieved all brands : ${brands}`);
+
+      return brands;
+    } catch (error) {
+      logger.error(
+        `[getAllBrands] Error fetching brands: ${(error as Error).message}`,
+      );
+
+      throw new InternalServerErrorException(
+        `Error fetching brands: ${(error as Error).message}`,
       );
     }
   }
@@ -77,9 +127,14 @@ export class OffersService {
         throw new NotFoundException('There are no offers available.');
       }
 
+      logger.info(`[getOffers] ${offers.length} offers retrieved successfully`);
+
       return offers;
     } catch (error) {
-      logger.error(`Error fetching offers: ${(error as Error).message}`);
+      logger.error(
+        `[getOffers] Error fetching offers: ${(error as Error).message}`,
+      );
+
       throw new NotFoundException(
         `Offers not found: ${(error as Error).message}`,
       );
@@ -100,13 +155,51 @@ export class OffersService {
         );
       }
 
+      logger.info(
+        `[getOffersByCategory] ${offers.length} offers retrieved successfully for category '${category}'`,
+      );
+
       return offers;
     } catch (error) {
       logger.error(
-        `Error fetching offers by category: ${(error as Error).message}`,
+        `[getOffersByCategory] Error fetching offers by category: ${(error as Error).message}`,
       );
+
       throw new NotFoundException(
         `Offers not found for this category: ${(error as Error).message}`,
+      );
+    }
+  }
+
+  async getOffersByCategoryNumber(
+    categoryNumber: number,
+    limit: number,
+  ): Promise<Offer[]> {
+    console.log(limit);
+    try {
+      const offers = await this.offerModel
+        .find({ categoryNumber })
+        .limit(limit)
+        .exec();
+
+      if (offers.length === 0) {
+        throw new NotFoundException(
+          `There are no offers available for category number!`,
+        );
+      }
+
+      logger.info(
+        `[getOffersByCategoryNumber] ${offers.length} offers retrieved successfully for category '${offers[0].offerName}'`,
+      );
+
+      return offers;
+    } catch (error) {
+      logger.error(
+        `[getOffersByCategoryNumber] Error fetching offers by category number: ${(error as Error).message}`,
+      );
+
+      throw new NotFoundException(
+        `Offers not found for this category number: ${(error as Error).message}`,
       );
     }
   }
@@ -124,11 +217,16 @@ export class OffersService {
         );
       }
 
+      logger.info(
+        `[getOffersByBrand] ${offers.length} offers retrieved successfully for brand '${brand}'`,
+      );
+
       return offers;
     } catch (error) {
       logger.error(
-        `Error fetching offers by brand: ${(error as Error).message}`,
+        `[getOffersByBrand] Error fetching offers by brand: ${(error as Error).message}`,
       );
+
       throw new NotFoundException(
         `Offers not found for this brand: ${(error as Error).message}`,
       );
@@ -169,8 +267,14 @@ export class OffersService {
         throw new NotFoundException(`Offer with ID ${offerId} not found`);
       }
 
+      logger.info(`[editOffer] Offer with ID ${offerId} updated successfully`);
+
       return offer;
     } catch (error) {
+      logger.error(
+        `[editOffer] Error updating offer: ${(error as Error).message}`,
+      );
+
       throw new InternalServerErrorException(
         `Error updating offer: ${(error as Error).message}`,
       );

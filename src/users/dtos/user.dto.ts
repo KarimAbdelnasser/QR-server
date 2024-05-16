@@ -14,9 +14,6 @@ export class UserDto {
   cardNumber: number;
 
   @Expose()
-  pin: string;
-
-  @Expose()
   isVerified: boolean;
 
   @Expose()

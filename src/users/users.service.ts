@@ -10,9 +10,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './user.schema';
 import { Model } from 'mongoose';
 import { UserDto } from './dtos/user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
 import { logger } from 'src/utility/logger';
 import { Qr } from 'src/qr/qr.schema';
+import { config } from 'src/config/config';
 
 @Injectable()
 export class UsersService {
@@ -25,16 +25,15 @@ export class UsersService {
   async create(
     userName: string,
     email: string,
-    pin: number,
+    secretKey: string,
+    isVerified?: boolean,
   ): Promise<{ user: UserDto; token: string }> {
-    const user = await this.userModel.find({ email });
-
-    if (user.length) {
-      throw new ConflictException('email in use!');
-    }
-
     try {
-      const hashedPin = await this.authService.hashPin(pin);
+      // const hashedPin = await this.authService.hashPin(pin);
+
+      if (!userName) {
+        userName = await this.authService.generateUniqueUsername();
+      }
 
       const generatedCard = await this.authService.generateUniqueCardNumber();
 
@@ -42,8 +41,8 @@ export class UsersService {
         userName,
         email,
         cardNumber: generatedCard,
-        pin: hashedPin,
-        // isVerified: true, // TODO remove it in production. it's for dev env only!!
+        secretKey,
+        isVerified: isVerified || false,
       });
 
       await newUser.save();
@@ -60,13 +59,18 @@ export class UsersService {
         email: newUser.email,
         cardNumber: newUser.cardNumber,
         isVerified: newUser.isVerified,
-        pin: hashedPin,
         isAdmin: newUser.isAdmin,
       };
 
+      logger.info(
+        `[create] New user created successfully with id: ${newUser.id}`,
+      );
+
       return { user: userDto, token };
     } catch (error) {
-      logger.error(`Error creating a new user: ${(error as Error).message}`);
+      logger.error(
+        `[create] Error creating a new user: ${(error as Error).message}`,
+      );
 
       throw new InternalServerErrorException(
         `Could not create user : ${error.message}`,
@@ -77,11 +81,14 @@ export class UsersService {
   async findOne(id: number) {
     try {
       if (!id) {
-        return null;
+        throw new NotFoundException(`User with id ${id} not found`);
       }
+
+      logger.info(`findOne] Finding user with id: ${id}`);
+
       return this.userModel.findById(id);
     } catch (error) {
-      logger.error(`Error find a user: ${(error as Error).message}`);
+      logger.error(`[findOne] Error find a user: ${(error as Error).message}`);
 
       throw new InternalServerErrorException(
         `Could not find : ${error.message}`,
@@ -89,34 +96,115 @@ export class UsersService {
     }
   }
 
-  async saveQr(qrValue: string, url: string, userId: string) {
+  async findOneBySecret(secretKey: any) {
     try {
-      const qrCode = await this.qrModel.create({ userId, qrValue, url });
-      const savedQr = await qrCode.save();
-      return { qrCode: savedQr };
-    } catch (error) {
-      logger.error(`Error find a user: ${(error as Error).message}`);
-
-      throw new InternalServerErrorException(
-        `Could not find : ${error.message}`,
-      );
-    }
-  }
-
-  async deactivateCard(cardNumber: number): Promise<User> {
-    try {
-      const user = await this.userModel.findOneAndUpdate(
-        { cardNumber },
-        { isVerified: false },
-        { new: true },
-      );
-      if (!user) {
-        throw new NotFoundException(
-          `User with card number ${cardNumber} not found`,
-        );
+      if (!secretKey) {
+        throw new NotFoundException(`User not found!`);
       }
+      const exist = await this.userModel.findOne({ secretKey: secretKey });
+      if (exist) {
+        return true;
+      }
+    } catch (error) {
+      logger.error(
+        `[findOneBySecret] Error find a user: ${(error as Error).message}`,
+      );
+
+      throw new InternalServerErrorException(
+        `Could not find : ${error.message}`,
+      );
+    }
+  }
+
+  async findOneByEmail(email: string) {
+    try {
+      if (!email) {
+        throw new NotFoundException(`User with email ${email} not found`);
+      }
+
+      logger.info(`[findOneByEmail] Finding user by email: ${email}`);
+
+      return await this.userModel.findOne({ email });
+    } catch (error) {
+      logger.error(
+        `[findOneByEmail] Error find a user: ${(error as Error).message}`,
+      );
+
+      throw new InternalServerErrorException(
+        `Could not find : ${error.message}`,
+      );
+    }
+  }
+
+  async saveOtp(id: string, otp: string) {
+    try {
+      const user = await this.userModel.findById(id);
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+
+      user.otp.push(otp);
+
+      return await user.save();
+    } catch (error) {
+      logger.error(
+        `[saveOtp]Error updating OTP for user: ${(error as Error).message}`,
+      );
+      throw new InternalServerErrorException(
+        `Failed to update OTP for user: ${error.message}`,
+      );
+    }
+  }
+
+  async usedOtp(userId: string, otp: string): Promise<boolean> {
+    try {
+      const user = await this.userModel.findById(userId);
+
+      if (!user) {
+        throw new NotFoundException(`User with id ${userId} not found`);
+      }
+
+      const isOtpUsed = user.otp.includes(otp);
+
+      return isOtpUsed;
+    } catch (error) {
+      logger.error(
+        `[usedOtp]Error finding user or OTP: ${(error as Error).message}`,
+      );
+      throw new InternalServerErrorException(
+        `Failed to check OTP usage: ${error.message}`,
+      );
+    }
+  }
+
+  async deactivateCard(email: string): Promise<User> {
+    try {
+      const user = await this.findOneByEmail(email);
+
+      if (!user) {
+        throw new NotFoundException(`User with email ${email} not found`);
+      }
+
+      console.log(user.isVerified, typeof user.isVerified);
+
+      if (user.isVerified === false) {
+        throw new BadRequestException('User is already deactivated');
+      }
+
+      user.isVerified = false;
+
+      await user.save();
+
+      logger.info(
+        `[deactivateCard] User with email ${email} deactivated successfully`,
+      );
+
       return user;
     } catch (error) {
+      logger.error(
+        `[deactivateCard] Error deactivating user: ${(error as Error).message}`,
+      );
+
       throw new InternalServerErrorException(
         `Error deactivating user: ${(error as Error).message}`,
       );

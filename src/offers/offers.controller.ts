@@ -27,6 +27,7 @@ import { CreateOfferDto } from './dtos/create-offer-dto';
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
+  // * ADMIN Routes
   @Post('/addOne')
   // @SkipAdmin() // TODO remove it when production
   @UseGuards(AdminAuthGuard) //TODO active in production
@@ -144,6 +145,7 @@ export class OffersController {
     }
   }
 
+  // * Offer Routes
   @Get('/categories')
   @SkipAdmin()
   async getAllCategories(@Res() res) {
@@ -153,6 +155,21 @@ export class OffersController {
         responseMessage: 'Categories retrieved successfully',
         responseCode: 200,
         data: categories,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  @Get('/brands')
+  @SkipAdmin()
+  async getAllBrands(@Res() res, @Query('category') category: number) {
+    try {
+      const brands = await this.offersService.getAllBrands(category);
+      return res.json({
+        responseMessage: 'Brands retrieved successfully',
+        responseCode: 200,
+        data: brands,
       });
     } catch (error) {
       throw new InternalServerErrorException(error.message);
@@ -215,7 +232,7 @@ export class OffersController {
 
   @Get('/getByCategory')
   @SkipAdmin()
-  async getOffersByCategoryNumber(
+  async getOffersByCategory(
     @Query('category') category: string,
     @Res() res,
     @Req() req,
@@ -251,7 +268,46 @@ export class OffersController {
           errorCode: 400,
         });
       }
-      // Handle other errors
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  @Get('/getByCategoryNum')
+  @SkipAdmin()
+  async getOffersByCategoryNumber(
+    @Query('categoryNum') categoryNum: string,
+    @Res() res,
+    @Req() req,
+    @Query('limit') limit: number = 10,
+  ) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('Unauthorized: Missing user token');
+      }
+
+      if (!categoryNum) {
+        throw new BadRequestException(
+          'Bad request: Missing category query parameter',
+        );
+      }
+
+      const offers = await this.offersService.getOffersByCategoryNumber(
+        Number(categoryNum),
+        limit,
+      );
+
+      return res.json({
+        responseMessage: 'Offers retrieved successfully',
+        responseCode: 200,
+        data: offers,
+      });
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        return res.status(400).json({
+          errorMessage: error.message,
+          errorCode: 400,
+        });
+      }
       throw new InternalServerErrorException(error.message);
     }
   }

@@ -3,12 +3,17 @@ import * as bcrypt from 'bcrypt';
 import { config } from 'src/config/config';
 import { JwtService } from '@nestjs/jwt';
 import * as QRCode from 'qrcode';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './user.schema';
+import { Model } from 'mongoose';
+import { logger } from 'src/utility/logger';
 
 @Injectable()
 export class AuthService {
-  private generatedCardNumbers: Set<string> = new Set<string>();
-
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
 
   async hashPin(pin: number): Promise<string> {
     try {
@@ -78,6 +83,24 @@ export class AuthService {
     }
   }
 
+  async generateUniqueUsername(): Promise<string> {
+    let defaultUsername = 'user';
+
+    const randomDigits = Math.floor(10000 + Math.random() * 90000).toString();
+
+    defaultUsername += randomDigits;
+
+    const user = await this.userModel
+      .findOne({ userName: defaultUsername })
+      .exec();
+
+    if (user) {
+      return this.generateUniqueUsername();
+    }
+
+    return defaultUsername;
+  }
+
   async generateUniqueCardNumber(): Promise<string> {
     try {
       let cardNumber: string;
@@ -86,12 +109,21 @@ export class AuthService {
         for (let i = 0; i < 16; i++) {
           cardNumber += Math.floor(Math.random() * 10).toString();
         }
-      } while (this.generatedCardNumbers.has(cardNumber));
-      this.generatedCardNumbers.add(cardNumber);
+      } while (await this.isCardNumberExists(cardNumber));
       return cardNumber;
     } catch (error) {
       console.error(`Error generating unique card number: ${error.message}`);
       throw new Error('Failed to generate unique card number');
+    }
+  }
+
+  async isCardNumberExists(cardNumber: string): Promise<boolean> {
+    try {
+      const existingUser = await this.userModel.findOne({ cardNumber });
+      return !!existingUser;
+    } catch (error) {
+      logger.error(`Error checking card number existence: ${error.message}`);
+      throw new Error('Failed to check existing of a card number');
     }
   }
 
