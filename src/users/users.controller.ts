@@ -39,8 +39,8 @@ export class UsersController {
 
   // * ADMIN Routes
   @Post('/createCard')
-  @SkipAdmin() // TODO remove it when production
-  // @UseGuards(AdminAuthGuard) // TODO active in production
+  // @SkipAdmin() // TODO remove it when production
+  @UseGuards(AdminAuthGuard) // TODO active in production
   async createCard(@Body() body: CreateUserDto, @Res() res, @Req() req) {
     const existUser = await this.usersService.findOneByEmail(req.body.email);
 
