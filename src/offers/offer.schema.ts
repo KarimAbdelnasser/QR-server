@@ -23,6 +23,9 @@ export class Offer extends Document {
 
   @Prop({ type: Date, expires: 0 }) // Set initial value to 0
   expiresAt: Date;
+
+  @Prop({ required: true })
+  usersType: string;
 }
 
 export const OfferSchema = SchemaFactory.createForClass(Offer);

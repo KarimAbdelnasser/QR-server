@@ -75,9 +75,11 @@ export class OffersService {
     }
   }
 
-  async getAllCategories(): Promise<string[]> {
+  async getAllCategories(userType: string): Promise<string[]> {
     try {
-      const categories = await this.offerModel.distinct('category').exec();
+      const categories = await this.offerModel
+        .distinct('category', { usersType: userType })
+        .exec();
 
       logger.info(`[getAllCategories] Retrieved all categories: ${categories}`);
 
@@ -93,10 +95,13 @@ export class OffersService {
     }
   }
 
-  async getAllBrands(categoryNumber: number): Promise<string[]> {
+  async getAllBrands(
+    categoryNumber: number,
+    userType: string,
+  ): Promise<string[]> {
     try {
       const brands = await this.offerModel
-        .distinct('offerName', { categoryNumber })
+        .distinct('offerName', { categoryNumber, usersType: userType })
         .exec();
 
       if (!brands.length) {
@@ -119,9 +124,12 @@ export class OffersService {
     }
   }
 
-  async getOffers(limit: number): Promise<Offer[]> {
+  async getOffers(limit: number, userType: string): Promise<Offer[]> {
     try {
-      const offers = await this.offerModel.find().limit(limit).exec();
+      const offers = await this.offerModel
+        .find({ usersType: userType })
+        .limit(limit)
+        .exec();
 
       if (offers.length === 0) {
         throw new NotFoundException('There are no offers available.');
@@ -141,94 +149,101 @@ export class OffersService {
     }
   }
 
-  async getOffersByCategory(category: string, limit: number): Promise<Offer[]> {
-    console.log(limit);
+  async getOffersByCategory(
+    category: string,
+    userType: string,
+    limit: number,
+  ): Promise<Offer[]> {
     try {
       const offers = await this.offerModel
-        .find({ category })
+        .find({ category, usersType: userType })
         .limit(limit)
         .exec();
 
       if (offers.length === 0) {
         throw new NotFoundException(
-          `There are no offers available for category '${category}'.`,
+          `There are no offers available for category '${category}' and userType '${userType}'.`,
         );
       }
 
       logger.info(
-        `[getOffersByCategory] ${offers.length} offers retrieved successfully for category '${category}'`,
+        `[getOffersByCategory] ${offers.length} offers retrieved successfully for category '${category}' and userType '${userType}'`,
       );
 
       return offers;
     } catch (error) {
       logger.error(
-        `[getOffersByCategory] Error fetching offers by category: ${(error as Error).message}`,
+        `[getOffersByCategory] Error fetching offers by category and userType: ${(error as Error).message}`,
       );
 
       throw new NotFoundException(
-        `Offers not found for this category: ${(error as Error).message}`,
+        `Offers not found for this category and userType: ${(error as Error).message}`,
       );
     }
   }
 
   async getOffersByCategoryNumber(
     categoryNumber: number,
+    userType: string,
     limit: number,
   ): Promise<Offer[]> {
-    console.log(limit);
     try {
       const offers = await this.offerModel
-        .find({ categoryNumber })
+        .find({ categoryNumber, usersType: userType })
         .limit(limit)
         .exec();
 
       if (offers.length === 0) {
         throw new NotFoundException(
-          `There are no offers available for category number!`,
+          `There are no offers available for category number '${categoryNumber}' and userType '${userType}'.`,
         );
       }
 
       logger.info(
-        `[getOffersByCategoryNumber] ${offers.length} offers retrieved successfully for category '${offers[0].offerName}'`,
+        `[getOffersByCategoryNumber] ${offers.length} offers retrieved successfully for category number '${categoryNumber}' and userType '${userType}'`,
       );
 
       return offers;
     } catch (error) {
       logger.error(
-        `[getOffersByCategoryNumber] Error fetching offers by category number: ${(error as Error).message}`,
+        `[getOffersByCategoryNumber] Error fetching offers by category number and userType: ${(error as Error).message}`,
       );
 
       throw new NotFoundException(
-        `Offers not found for this category number: ${(error as Error).message}`,
+        `Offers not found for this category number and userType: ${(error as Error).message}`,
       );
     }
   }
 
-  async getOffersByBrand(brand: string, limit: number): Promise<Offer[]> {
+  async getOffersByBrand(
+    brand: string,
+    userType: string,
+    limit: number,
+  ): Promise<Offer[]> {
     try {
       const offers = await this.offerModel
-        .find({ offerName: brand })
+        .find({ offerName: brand, usersType: userType })
         .limit(limit)
         .exec();
 
       if (offers.length === 0) {
         throw new NotFoundException(
-          `There are no offers available for this brand '${brand}'.`,
+          `There are no offers available for this brand '${brand}' and userType '${userType}'.`,
         );
       }
 
       logger.info(
-        `[getOffersByBrand] ${offers.length} offers retrieved successfully for brand '${brand}'`,
+        `[getOffersByBrand] ${offers.length} offers retrieved successfully for brand '${brand}' and userType '${userType}'`,
       );
 
       return offers;
     } catch (error) {
       logger.error(
-        `[getOffersByBrand] Error fetching offers by brand: ${(error as Error).message}`,
+        `[getOffersByBrand] Error fetching offers by brand and userType: ${(error as Error).message}`,
       );
 
       throw new NotFoundException(
-        `Offers not found for this brand: ${(error as Error).message}`,
+        `Offers not found for this brand and userType: ${(error as Error).message}`,
       );
     }
   }

@@ -21,11 +21,15 @@ import { SkipAdmin } from '../decorators/skip-admin-guard.decorator';
 import { OfferDto } from './dtos/offer.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CreateOfferDto } from './dtos/create-offer-dto';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('offer')
 @Serialize(OfferDto)
 export class OffersController {
-  constructor(private readonly offersService: OffersService) {}
+  constructor(
+    private readonly offersService: OffersService,
+    private readonly usersService: UsersService,
+  ) {}
 
   // * ADMIN Routes
   @Post('/addOne')
@@ -148,9 +152,13 @@ export class OffersController {
   // * Offer Routes
   @Get('/categories')
   @SkipAdmin()
-  async getAllCategories(@Res() res) {
+  async getAllCategories(@Res() res, @Req() req) {
     try {
-      const categories = await this.offersService.getAllCategories();
+      const user = await this.usersService.findOne(req.user._id);
+
+      const categories = await this.offersService.getAllCategories(
+        user.userType,
+      );
       return res.json({
         responseMessage: 'Categories retrieved successfully',
         responseCode: 200,
@@ -163,9 +171,18 @@ export class OffersController {
 
   @Get('/brands')
   @SkipAdmin()
-  async getAllBrands(@Res() res, @Query('category') category: number) {
+  async getAllBrands(
+    @Req() req,
+    @Res() res,
+    @Query('category') category: number,
+  ) {
     try {
-      const brands = await this.offersService.getAllBrands(category);
+      const user = await this.usersService.findOne(req.user._id);
+
+      const brands = await this.offersService.getAllBrands(
+        category,
+        user.userType,
+      );
       return res.json({
         responseMessage: 'Brands retrieved successfully',
         responseCode: 200,
@@ -188,7 +205,9 @@ export class OffersController {
         throw new UnauthorizedException('Unauthorized: Missing user token');
       }
 
-      const offers = await this.offersService.getOffers(limit);
+      const user = await this.usersService.findOne(req.user._id);
+
+      const offers = await this.offersService.getOffers(limit, user.userType);
 
       console.log('🚀 ~ OffersController ~ offers:', typeof offers);
 
@@ -206,6 +225,7 @@ export class OffersController {
   @SkipAdmin()
   async getOffersByBrandName(
     @Query('brand') brand: string,
+    @Req() req,
     @Res() res,
     @Query('limit') limit: number = 10,
   ) {
@@ -215,8 +235,13 @@ export class OffersController {
           'Bad request: Missing brand query parameter',
         );
       }
+      const user = await this.usersService.findOne(req.user._id);
 
-      const offers = await this.offersService.getOffersByBrand(brand, limit);
+      const offers = await this.offersService.getOffersByBrand(
+        brand,
+        user.userType,
+        limit,
+      );
 
       console.log('🚀 ~ OffersController ~ offers:', typeof offers);
 
@@ -249,8 +274,11 @@ export class OffersController {
         );
       }
 
+      const user = await this.usersService.findOne(req.user._id);
+
       const offers = await this.offersService.getOffersByCategory(
         category,
+        user.userType,
         limit,
       );
       console.log('🚀 ~ OffersController ~ offers:', typeof offers);
@@ -290,9 +318,11 @@ export class OffersController {
           'Bad request: Missing category query parameter',
         );
       }
+      const user = await this.usersService.findOne(req.user._id);
 
       const offers = await this.offersService.getOffersByCategoryNumber(
         Number(categoryNum),
+        user.userType,
         limit,
       );
 

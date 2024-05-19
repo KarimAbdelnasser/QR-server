@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { config } from 'src/config/config';
 import { JwtService } from '@nestjs/jwt';
@@ -10,6 +10,7 @@ import { logger } from 'src/utility/logger';
 
 @Injectable()
 export class AuthService {
+  private readonly generatedOtps: Set<string> = new Set();
   constructor(
     private readonly jwtService: JwtService,
     @InjectModel(User.name) private readonly userModel: Model<User>,
@@ -40,6 +41,7 @@ export class AuthService {
     id: string,
     isVerified: boolean,
     isAdmin: boolean,
+    cardNumber: any,
   ): Promise<string> {
     try {
       const token = this.jwtService.sign(
@@ -47,6 +49,7 @@ export class AuthService {
           _id: String(id),
           isVerified,
           isAdmin,
+          cardNumber,
         },
         {
           secret: config.scanJwt,
@@ -63,13 +66,15 @@ export class AuthService {
     id: string,
     isVerified: boolean,
     isAdmin: boolean,
+    cardNumber: number,
   ): Promise<string> {
     try {
       const token = this.jwtService.sign(
         {
-          _id: String(id),
+          _id: id,
           isVerified,
           isAdmin,
+          cardNumber,
         },
         {
           secret: config.appJwt,
@@ -80,6 +85,24 @@ export class AuthService {
     } catch (error) {
       console.error(`Error generating app JWT token: ${error.message}`);
       throw new Error('Failed to generate app JWT token');
+    }
+  }
+
+  async generateUniqueOtp(): Promise<string> {
+    try {
+      let otp: string;
+      do {
+        otp = Math.floor(1000 + Math.random() * 9000).toString();
+      } while (this.generatedOtps.has(otp));
+
+      this.generatedOtps.add(otp);
+      logger.info(`[generateUniqueOtp] Generated unique OTP: ${otp}`);
+      return otp;
+    } catch (error) {
+      logger.error(
+        `[generateUniqueOtp] Error generating OTP: ${error.message}`,
+      );
+      throw new InternalServerErrorException('Failed to generate unique OTP');
     }
   }
 

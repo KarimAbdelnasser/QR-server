@@ -17,7 +17,7 @@ export class QrController {
   @Get('/getAll')
   // @SkipAdmin() // TODO remove it when production
   @UseGuards(AdminAuthGuard) // TODO active in production
-  async getQrs(@Query('limit') limit: number = 2, @Res() res) {
+  async getQrs(@Query('limit') limit: number = 4, @Res() res) {
     try {
       const qrs = await this.qrService.getQrs(limit);
 

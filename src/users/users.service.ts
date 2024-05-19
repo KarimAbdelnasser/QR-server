@@ -25,8 +25,11 @@ export class UsersService {
   async create(
     userName: string,
     email: string,
-    secretKey: string,
+    phoneNumber: string,
+    userType: string,
+    otpStatus?: string,
     isVerified?: boolean,
+    isAdmin?: boolean,
   ): Promise<{ user: UserDto; token: string }> {
     try {
       // const hashedPin = await this.authService.hashPin(pin);
@@ -37,20 +40,30 @@ export class UsersService {
 
       const generatedCard = await this.authService.generateUniqueCardNumber();
 
+      let otpStatus;
+
+      if (!otpStatus && userType === 'A') {
+        otpStatus = 'enable';
+      }
+
       const newUser = await new this.userModel({
         userName,
         email,
         cardNumber: generatedCard,
-        secretKey,
+        otpStatus: otpStatus,
+        userType: userType,
+        phoneNumber: phoneNumber,
         isVerified: isVerified || false,
+        isAdmin: isAdmin || false,
       });
 
       await newUser.save();
 
-      const token = await this.authService.generateScanJwtToken(
+      const token = await this.authService.generateAppJwtToken(
         newUser.id,
         newUser.isVerified,
         newUser.isAdmin,
+        Number(generatedCard),
       );
 
       const userDto: UserDto = {
@@ -60,6 +73,8 @@ export class UsersService {
         cardNumber: newUser.cardNumber,
         isVerified: newUser.isVerified,
         isAdmin: newUser.isAdmin,
+        userType: newUser.userType,
+        phoneNumber: newUser.phoneNumber,
       };
 
       logger.info(
@@ -78,7 +93,7 @@ export class UsersService {
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     try {
       if (!id) {
         throw new NotFoundException(`User with id ${id} not found`);
@@ -96,25 +111,25 @@ export class UsersService {
     }
   }
 
-  async findOneBySecret(secretKey: any) {
-    try {
-      if (!secretKey) {
-        throw new NotFoundException(`User not found!`);
-      }
-      const exist = await this.userModel.findOne({ secretKey: secretKey });
-      if (exist) {
-        return true;
-      }
-    } catch (error) {
-      logger.error(
-        `[findOneBySecret] Error find a user: ${(error as Error).message}`,
-      );
+  // async findOneBySecret(secretKey: any) {
+  //   try {
+  //     if (!secretKey) {
+  //       throw new NotFoundException(`User not found!`);
+  //     }
+  //     const exist = await this.userModel.findOne({ secretKey: secretKey });
+  //     if (exist) {
+  //       return true;
+  //     }
+  //   } catch (error) {
+  //     logger.error(
+  //       `[findOneBySecret] Error find a user: ${(error as Error).message}`,
+  //     );
 
-      throw new InternalServerErrorException(
-        `Could not find : ${error.message}`,
-      );
-    }
-  }
+  //     throw new InternalServerErrorException(
+  //       `Could not find : ${error.message}`,
+  //     );
+  //   }
+  // }
 
   async findOneByEmail(email: string) {
     try {
@@ -143,7 +158,7 @@ export class UsersService {
         throw new NotFoundException(`User with id ${id} not found`);
       }
 
-      user.otp.push(otp);
+      // user.otp.push(otp);
 
       return await user.save();
     } catch (error) {
@@ -156,7 +171,7 @@ export class UsersService {
     }
   }
 
-  async usedOtp(userId: string, otp: string): Promise<boolean> {
+  async usedOtp(userId: string, otp: string) {
     try {
       const user = await this.userModel.findById(userId);
 
@@ -164,9 +179,9 @@ export class UsersService {
         throw new NotFoundException(`User with id ${userId} not found`);
       }
 
-      const isOtpUsed = user.otp.includes(otp);
+      // const isOtpUsed = user.otp.includes(otp);
 
-      return isOtpUsed;
+      // return isOtpUsed;
     } catch (error) {
       logger.error(
         `[usedOtp]Error finding user or OTP: ${(error as Error).message}`,
@@ -184,8 +199,6 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException(`User with email ${email} not found`);
       }
-
-      console.log(user.isVerified, typeof user.isVerified);
 
       if (user.isVerified === false) {
         throw new BadRequestException('User is already deactivated');

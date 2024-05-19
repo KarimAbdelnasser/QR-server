@@ -6,6 +6,7 @@ import {
   Min,
   Max,
   IsBoolean,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -16,6 +17,9 @@ export class CreateUserDto {
   @IsEmail()
   email: string;
 
+  @IsString()
+  userType: string;
+
   @IsNumber()
   @Min(1000)
   @Max(9999)
@@ -23,4 +27,14 @@ export class CreateUserDto {
 
   @IsBoolean()
   isVerified: boolean;
+
+  @IsBoolean()
+  isAdmin: boolean;
+
+  @IsString()
+  otpStatus: string;
+
+  @IsNumber()
+  @MaxLength(11)
+  phoneNumber: string;
 }
