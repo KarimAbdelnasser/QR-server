@@ -25,7 +25,7 @@ import { SkipAdmin } from '../decorators/skip-admin-guard.decorator';
 import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
 import { AuthService } from './auth.service';
-import commonLib from 'common-package';
+// import commonLib from 'common-package';
 import { logger } from 'src/utility/logger';
 
 @Controller('user')
