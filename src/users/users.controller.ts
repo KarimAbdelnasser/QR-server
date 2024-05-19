@@ -24,9 +24,9 @@ import { AdminAuthGuard } from '../guards/admin.guard';
 import { SkipAdmin } from '../decorators/skip-admin-guard.decorator';
 import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
-import * as jwt from 'jsonwebtoken';
 import { AuthService } from './auth.service';
-import { authenticator } from 'otplib';
+import commonLib from 'common-package';
+import { logger } from 'src/utility/logger';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -39,8 +39,8 @@ export class UsersController {
 
   // * ADMIN Routes
   @Post('/createCard')
-  // @SkipAdmin() // TODO remove it when production
-  @UseGuards(AdminAuthGuard) // TODO active in production
+  @SkipAdmin() // TODO remove it when production
+  // @UseGuards(AdminAuthGuard) // TODO active in production
   async createCard(@Body() body: CreateUserDto, @Res() res, @Req() req) {
     const existUser = await this.usersService.findOneByEmail(req.body.email);
 
@@ -48,22 +48,19 @@ export class UsersController {
       throw new ConflictException('email in use!');
     }
 
-    let secretKey;
-    let existSecretKey;
-
-    do {
-      secretKey = await this.qrService.generateSecretKey();
-      existSecretKey = await this.usersService.findOneBySecret(secretKey);
-    } while (existSecretKey);
-
-    const qrCode = await this.qrService.generateQRCode(body.email, secretKey);
-
     const { user, token } = await this.usersService.create(
       body.userName,
       body.email,
-      secretKey,
+      body.phoneNumber,
+      body.userType,
+      body.otpStatus,
       body.isVerified,
+      body.isAdmin,
     );
+
+    const url = `${config.url}/valid?userId=${user.id}`;
+
+    const qrCode = await this.qrService.generateQRCode(url, user.id.toString());
 
     const qrCodeString = qrCode.toString('base64');
 
@@ -72,7 +69,8 @@ export class UsersController {
     res.header('auth-token', token).json({
       userName: `${user.userName}`,
       cardNumber: `${user.cardNumber}`,
-      qrCode: qrCode,
+      token: token,
+      qrCode: qrCodeString,
     });
   }
 
@@ -98,13 +96,12 @@ export class UsersController {
 
     await user.save();
 
-    const token = await this.authService.generateScanJwtToken(
+    const token = await this.authService.generateAppJwtToken(
       user.id,
       user.isVerified,
       user.isAdmin,
+      user.cardNumber,
     );
-
-    await this.qrService.updateQr(user.id.toString(), token);
 
     return res.json({
       responseMessage: 'تم تفعيل الكارت',
@@ -122,18 +119,8 @@ export class UsersController {
         body.email,
       );
 
-      const user = await this.usersService.findOneByEmail(body.email);
-
-      const token = await this.authService.generateScanJwtToken(
-        user.id,
-        user.isVerified,
-        user.isAdmin,
-      );
-
-      await this.qrService.updateQr(user.id.toString(), token);
-
       return res.json({
-        responseMessage: 'User deactivated successfully',
+        responseMessage: 'تم إيقاف تفعيل الكارت',
         responseCode: 200,
         data: deactivatedUser,
       });
@@ -152,33 +139,27 @@ export class UsersController {
   // * User Routes
   @Get('/scan')
   @SkipAdmin()
-  async scanQr(
-    @Query('credentials') queryCredentials: string,
-    @Req() req,
-    @Res() res,
-  ) {
-    if (!queryCredentials) {
-      throw new UnauthorizedException('Unauthorized');
+  async scanQr(@Query('userId') queryUserId: string, @Req() req, @Res() res) {
+    if (!queryUserId) {
+      throw new UnauthorizedException('QueryUserId missing');
     }
 
     try {
-      const decodedToken = jwt.verify(queryCredentials, config.scanJwt);
+      console.log(queryUserId);
+      const user = await this.usersService.findOne(queryUserId.toString());
 
-      req.user = decodedToken;
-
-      if (!req.user.isVerified) {
+      if (!user.isVerified) {
         return res.status(400).json({
           responseMessage: 'الكارت غير صالح',
           responseCode: 400,
         });
       }
 
-      const user = await this.usersService.findOne(req.user._id);
-
       const token = await this.authService.generateAppJwtToken(
-        req.user._id,
+        user.id,
         user.isVerified,
         user.isAdmin,
+        user.cardNumber,
       );
 
       return res.header('auth-token', token).json({
@@ -191,65 +172,121 @@ export class UsersController {
     }
   }
 
-  @Post('/verifyCard')
+  @Post('/logIn')
   @SkipAdmin()
-  async verifyPin(@Body() body, @Res() res) {
-    const enteredOtp = body.otp;
+  async logIn(@Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('Unauthorized');
+      }
 
-    const email = body.email;
+      const user = await this.usersService.findOne(req.user._id.toString());
 
-    const user = await this.usersService.findOneByEmail(email);
-
-    if (!user) {
-      return res.status(400).json({
-        responseMessage: 'User not found',
-        responseCode: 400,
-      });
-    }
-
-    if (!user.isVerified) {
-      return res.status(401).json({
-        responseMessage: 'User not verified!',
-        responseCode: 401,
-      });
-    }
-
-    const secretKey = user.secretKey;
-
-    const isValidOTP = authenticator.verify({
-      token: enteredOtp,
-      secret: secretKey,
-    });
-
-    if (isValidOTP) {
-      const token = await this.authService.generateAppJwtToken(
-        user.id,
-        user.isVerified,
-        user.isAdmin,
-      );
-
-      const usedOtp = await this.usersService.usedOtp(user.id, enteredOtp);
-
-      if (usedOtp) {
+      if (user.isLoggedIn) {
         return res.status(400).json({
-          responseMessage:
-            'الرقم الذي أدخلته تم استخدامه حاول مرة اخري برقم اخر',
+          responseMessage: 'لقت قمت بإنشاء رقم سري من قبل!',
           responseCode: 400,
         });
       }
 
-      await this.usersService.saveOtp(user.id, enteredOtp);
+      const hashedPin = await this.authService.hashPin(req.body.pin);
 
-      return res.json({
-        responseMessage: 'الرقم الذي أدخلته صالح',
+      user.pin = hashedPin;
+
+      user.isLoggedIn = true;
+
+      await user.save();
+
+      return res.status(200).json({
+        responseMessage: 'تم إنشاء الرقم السري',
         responseCode: 200,
-        token: token,
       });
-    } else {
+
+      // ! Send OTP in message
+      // await commonLib.notifications.sendSMS(phoneNumber, otp, msg);
+      // console.log(`OTP ${otp}has been sent to ${phoneNumber}`, otp);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  @Post('/sendOtp')
+  @SkipAdmin()
+  async sendOtp(@Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('Unauthorized');
+      }
+
+      const user = await this.usersService.findOne(req.user._id.toString());
+
+      if (user.otp) {
+        return res.status(400).json({
+          responseMessage: 'لقت قمت بإنشاء رقم صالح ولم ينهي بعد!',
+          responseCode: 400,
+        });
+      }
+
+      const phoneNumber = user.phoneNumber;
+
+      const otp = await this.authService.generateUniqueOtp();
+
+      const msg = 'OTP الخاص بك :';
+
+      user.otp = otp;
+
+      await user.save();
+
+      // ! Send OTP in message
+      // await commonLib.notifications.sendSMS(phoneNumber, otp, msg);
+      // console.log(`OTP ${otp}has been sent to ${phoneNumber}`, otp);
+
+      return res.status(200).json({
+        responseMessage: 'تم إرسال OTP',
+        responseCode: 200,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  @Post('/verifyOtp')
+  @SkipAdmin()
+  async verifyOtp(@Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('Unauthorized');
+      }
+
+      const user = await this.usersService.findOne(req.user._id.toString());
+
+      if (user.isLoggedIn) {
+        return res.status(400).json({
+          responseMessage: 'لقد قمت بتسجيل الدخول مسبقاً!',
+          responseCode: 400,
+        });
+      }
+
+      const otp = req.body.otp;
+
+      if (otp === user.otp) {
+        user.otp = '';
+        user.isLoggedIn = true;
+        await user.save();
+
+        return res.status(200).json({
+          responseMessage: 'OTP مطابق',
+          responseCode: 200,
+        });
+      }
+
       return res.status(400).json({
-        responseMessage: 'الرقم الذي أدخلته غير صالح',
+        responseMessage: 'غير مطابق OTP',
         responseCode: 400,
       });
+    } catch (error) {
+      logger.error(`[verifyOtp] Error verifying OTP: ${error.message}`);
+      throw new UnauthorizedException('Invalid token');
     }
   }
 

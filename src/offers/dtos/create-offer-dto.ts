@@ -46,4 +46,10 @@ export class CreateOfferDto {
     message: 'Invalid date format. Date should be in yyyy-mm-dd format.',
   })
   expiresAt: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(1)
+  usersType: string;
 }

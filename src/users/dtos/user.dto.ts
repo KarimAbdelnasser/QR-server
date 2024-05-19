@@ -8,7 +8,13 @@ export class UserDto {
   userName: string;
 
   @Expose()
+  userType: string;
+
+  @Expose()
   email: string;
+
+  @Expose()
+  phoneNumber: string;
 
   @Expose()
   cardNumber: number;
