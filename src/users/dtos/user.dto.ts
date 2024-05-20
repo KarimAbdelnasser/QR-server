@@ -11,6 +11,9 @@ export class UserDto {
   userType: string;
 
   @Expose()
+  pin: string;
+
+  @Expose()
   email: string;
 
   @Expose()

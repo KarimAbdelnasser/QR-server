@@ -29,17 +29,15 @@ export class AppModule {
     consumer
       .apply(AppJwtMiddleware)
       .exclude(
-        // { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
+        { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
         { path: 'user/scan', method: RequestMethod.GET },
-        { path: 'user/verifyCard', method: RequestMethod.POST },
       )
       .forRoutes('*');
 
     consumer
       .apply(IsVerifiedMiddleware)
       .exclude(
-        { path: 'user/createCard', method: RequestMethod.POST },
-        { path: 'user/verifyCard', method: RequestMethod.POST },
+        { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
         { path: 'user/scan', method: RequestMethod.GET },
       )
       .forRoutes('*');

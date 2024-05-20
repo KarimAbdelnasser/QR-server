@@ -209,11 +209,10 @@ export class OffersController {
 
       const offers = await this.offersService.getOffers(limit, user.userType);
 
-      console.log('🚀 ~ OffersController ~ offers:', typeof offers);
-
       return res.json({
         responseMessage: 'Offers retrieved successfully',
         responseCode: 200,
+        otpStatus: user.otpStatus,
         data: offers,
       });
     } catch (error) {
@@ -242,8 +241,6 @@ export class OffersController {
         user.userType,
         limit,
       );
-
-      console.log('🚀 ~ OffersController ~ offers:', typeof offers);
 
       return res.json({
         responseMessage: 'Offers retrieved successfully',
@@ -281,16 +278,15 @@ export class OffersController {
         user.userType,
         limit,
       );
-      console.log('🚀 ~ OffersController ~ offers:', typeof offers);
 
       return res.json({
         responseMessage: 'Offers retrieved successfully',
         responseCode: 200,
+        otpStatus: user.otpStatus,
         data: offers,
       });
     } catch (error) {
       if (error instanceof BadRequestException) {
-        // Handle bad request error
         return res.status(400).json({
           errorMessage: error.message,
           errorCode: 400,
@@ -329,6 +325,7 @@ export class OffersController {
       return res.json({
         responseMessage: 'Offers retrieved successfully',
         responseCode: 200,
+        otpStatus: user.otpStatus,
         data: offers,
       });
     } catch (error) {

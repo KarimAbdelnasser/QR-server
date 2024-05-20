@@ -13,12 +13,15 @@ import { UserDto } from './dtos/user.dto';
 import { logger } from 'src/utility/logger';
 import { Qr } from 'src/qr/qr.schema';
 import { config } from 'src/config/config';
+import { ActiveOffer } from './activeOffer.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Qr.name) private readonly qrModel: Model<Qr>,
+    @InjectModel(ActiveOffer.name)
+    private readonly activeOfferModel: Model<ActiveOffer>,
     private authService: AuthService,
   ) {}
 
@@ -26,13 +29,14 @@ export class UsersService {
     userName: string,
     email: string,
     phoneNumber: string,
+    pin: string,
     userType: string,
     otpStatus?: string,
     isVerified?: boolean,
     isAdmin?: boolean,
   ): Promise<{ user: UserDto; token: string }> {
     try {
-      // const hashedPin = await this.authService.hashPin(pin);
+      const hashedPin = await this.authService.hashPin(Number(pin));
 
       if (!userName) {
         userName = await this.authService.generateUniqueUsername();
@@ -42,7 +46,7 @@ export class UsersService {
 
       let otpStatus;
 
-      if (!otpStatus && userType === 'A') {
+      if (!otpStatus && userType === 'B') {
         otpStatus = 'enable';
       }
 
@@ -51,6 +55,7 @@ export class UsersService {
         email,
         cardNumber: generatedCard,
         otpStatus: otpStatus,
+        pin: hashedPin,
         userType: userType,
         phoneNumber: phoneNumber,
         isVerified: isVerified || false,
@@ -70,6 +75,7 @@ export class UsersService {
         id: newUser.id,
         userName: newUser.userName,
         email: newUser.email,
+        pin: newUser.pin,
         cardNumber: newUser.cardNumber,
         isVerified: newUser.isVerified,
         isAdmin: newUser.isAdmin,
@@ -93,6 +99,20 @@ export class UsersService {
     }
   }
 
+  async createActiveOffer(
+    userId: string,
+    brand: string,
+    otp: string,
+  ): Promise<ActiveOffer> {
+    const newActiveOffer = new this.activeOfferModel({
+      userId,
+      brand,
+      otp,
+      otpVerified: false,
+    });
+    return newActiveOffer.save();
+  }
+
   async findOne(id: string) {
     try {
       if (!id) {
@@ -107,6 +127,58 @@ export class UsersService {
 
       throw new InternalServerErrorException(
         `Could not find : ${error.message}`,
+      );
+    }
+  }
+
+  async findActiveOfferByUserId(userId: string): Promise<ActiveOffer | null> {
+    return this.activeOfferModel.findOne({ userId }).exec();
+  }
+
+  async returnCases(id: string, token: string) {
+    try {
+      if (!id) {
+        throw new NotFoundException(`User id missing!`);
+      }
+
+      const user = await this.findOne(id);
+
+      if (!user) {
+        throw new NotFoundException(`User not found!`);
+      }
+
+      const activeOffer = await this.findActiveOfferByUserId(id);
+
+      if (!activeOffer) {
+        return {
+          responseMessage: 'لم يتم التصديق على اى عملية.',
+          responseCode: 200,
+          userType: user.userType,
+          otpStatus: user.otpStatus,
+          token,
+        };
+      }
+
+      let responseMessage;
+      let responseCode = 200;
+
+      if (activeOffer.otpVerified) {
+        responseMessage = `العملية مقبولة ل${activeOffer.brand} والكارت صالح.`;
+      } else {
+        responseMessage = `الكارت صالح والعملية غير مقبولة ل${activeOffer.brand} يرجى ادخال OTP مرة اخرى.`;
+      }
+
+      return {
+        responseMessage,
+        responseCode,
+        userType: user.userType,
+        otpStatus: user.otpStatus,
+        token,
+      };
+    } catch (error) {
+      logger.error(`[returnCases] Error : ${(error as Error).message}`);
+      throw new InternalServerErrorException(
+        `Could not return case : ${error.message}`,
       );
     }
   }
