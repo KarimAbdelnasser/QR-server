@@ -184,7 +184,7 @@ export class UsersController {
 
       if (user.isLoggedIn) {
         return res.status(400).json({
-          responseMessage: 'لقت قمت بإنشاء رقم سري من قبل!',
+          responseMessage: 'لقد قمت بإنشاء رقم سري من قبل!',
           responseCode: 400,
         });
       }
