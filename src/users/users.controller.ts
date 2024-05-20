@@ -27,6 +27,7 @@ import { config } from '../config/config';
 import { AuthService } from './auth.service';
 // import commonLib from 'common-package';
 import { logger } from 'src/utility/logger';
+import { ActiveOffer } from './activeOffer.schema';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -39,8 +40,8 @@ export class UsersController {
 
   // * ADMIN Routes
   @Post('/createCard')
-  // @SkipAdmin() // TODO remove it when production
-  @UseGuards(AdminAuthGuard) // TODO active in production
+  @SkipAdmin() // TODO remove it when production
+  // @UseGuards(AdminAuthGuard) // TODO active in production
   async createCard(@Body() body: CreateUserDto, @Res() res, @Req() req) {
     const existUser = await this.usersService.findOneByEmail(req.body.email);
 
@@ -48,10 +49,15 @@ export class UsersController {
       throw new ConflictException('email in use!');
     }
 
+    if (!body.pin) {
+      throw new BadRequestException('Bad request: Missing pin');
+    }
+
     const { user, token } = await this.usersService.create(
       body.userName,
       body.email,
       body.phoneNumber,
+      body.pin.toString(),
       body.userType,
       body.otpStatus,
       body.isVerified,
@@ -160,54 +166,89 @@ export class UsersController {
         user.isAdmin,
         user.cardNumber,
       );
-
-      return res.header('auth-token', token).json({
-        responseMessage: 'الكارت صالح',
-        responseCode: 200,
-        token: token,
-      });
-    } catch (error) {
-      throw new UnauthorizedException('Invalid token');
-    }
-  }
-
-  @Post('/logIn')
-  @SkipAdmin()
-  async logIn(@Req() req, @Res() res) {
-    try {
-      if (!req.user) {
-        throw new UnauthorizedException('Unauthorized');
-      }
-
-      const user = await this.usersService.findOne(req.user._id.toString());
-
-      if (user.isLoggedIn) {
-        return res.status(400).json({
-          responseMessage: 'لقد قمت بإنشاء رقم سري من قبل!',
-          responseCode: 400,
+      if (user.userType === 'A') {
+        return res.header('auth-token', token).json({
+          responseMessage: 'الكارت صالح',
+          responseCode: 200,
+          userType: user.userType,
+          otpStatus: user.otpStatus,
+          token: token,
         });
+      } else {
+        const returnJson = await this.usersService.returnCases(user.id, token);
+
+        return res.header('auth-token', token).json(returnJson);
       }
-
-      const hashedPin = await this.authService.hashPin(req.body.pin);
-
-      user.pin = hashedPin;
-
-      user.isLoggedIn = true;
-
-      await user.save();
-
-      return res.status(200).json({
-        responseMessage: 'تم إنشاء الرقم السري',
-        responseCode: 200,
-      });
-
-      // ! Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, otp, msg);
-      // console.log(`OTP ${otp}has been sent to ${phoneNumber}`, otp);
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid QR Code: ', error.message);
     }
   }
+
+  @Post('/verifyPin')
+  @SkipAdmin()
+  async verifyPin(@Body() body, @Req() req, @Res() res) {
+    if (!req.user) {
+      throw new UnauthorizedException('Unauthorized: Missing user token');
+    }
+
+    const userId = req.user._id;
+
+    const enteredPin = body.pin;
+
+    const user = await this.usersService.findOne(userId);
+
+    const compare = await this.authService.comparePin(enteredPin, user.pin);
+
+    if (compare) {
+      return res.json({
+        responseMessage: 'الرقم الذي أدخلته مطابق جاري إعاده توجيهك',
+        responseCode: 200,
+      });
+    } else {
+      return res.status(400).json({
+        responseMessage: 'الرقم الذي أدخلته غير مطابق',
+        responseCode: 400,
+      });
+    }
+  }
+
+  // @Post('/logIn')
+  // @SkipAdmin()
+  // async logIn(@Req() req, @Res() res) {
+  //   try {
+  //     if (!req.user) {
+  //       throw new UnauthorizedException('Unauthorized');
+  //     }
+
+  //     const user = await this.usersService.findOne(req.user._id.toString());
+
+  //     if (user.isLoggedIn) {
+  //       return res.status(400).json({
+  //         responseMessage: 'لقد قمت بإنشاء رقم سري من قبل!',
+  //         responseCode: 400,
+  //       });
+  //     }
+
+  //     const hashedPin = await this.authService.hashPin(req.body.pin);
+
+  //     user.pin = hashedPin;
+
+  //     user.isLoggedIn = true;
+
+  //     await user.save();
+
+  //     return res.status(200).json({
+  //       responseMessage: 'تم إنشاء الرقم السري',
+  //       responseCode: 200,
+  //     });
+
+  //     // ! Send OTP in message
+  //     // await commonLib.notifications.sendSMS(phoneNumber, otp, msg);
+  //     // console.log(`OTP ${otp}has been sent to ${phoneNumber}`, otp);
+  //   } catch (error) {
+  //     throw new UnauthorizedException('Invalid token');
+  //   }
+  // }
 
   @Post('/sendOtp')
   @SkipAdmin()
@@ -217,35 +258,43 @@ export class UsersController {
         throw new UnauthorizedException('Unauthorized');
       }
 
-      const user = await this.usersService.findOne(req.user._id.toString());
+      const brand = req.body.brand;
 
-      if (user.otp) {
+      // Check if the user has an active offer
+      const existingActiveOffer =
+        await this.usersService.findActiveOfferByUserId(
+          req.user._id.toString(),
+        );
+      if (existingActiveOffer) {
         return res.status(400).json({
-          responseMessage: 'لقت قمت بإنشاء رقم صالح ولم ينهي بعد!',
+          responseMessage: 'لقد قمت بالحصول على عرض اخر!',
           responseCode: 400,
         });
       }
 
-      const phoneNumber = user.phoneNumber;
+      const phoneNumber = req.user.phoneNumber;
 
       const otp = await this.authService.generateUniqueOtp();
 
-      const msg = 'OTP الخاص بك :';
+      const msg = `OTP الخاص بك : ${otp}`;
 
-      user.otp = otp;
+      // Create ActiveOffer using ActiveOfferService
+      await this.usersService.createActiveOffer(
+        req.user._id.toString(),
+        brand,
+        otp,
+      );
 
-      await user.save();
-
-      // ! Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, otp, msg);
-      // console.log(`OTP ${otp}has been sent to ${phoneNumber}`, otp);
+      // Send OTP in message
+      // await commonLib.notifications.sendSMS(phoneNumber, msg);
+      // console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
 
       return res.status(200).json({
         responseMessage: 'تم إرسال OTP',
         responseCode: 200,
       });
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new UnauthorizedException('Invalid', error.message);
     }
   }
 
@@ -257,24 +306,25 @@ export class UsersController {
         throw new UnauthorizedException('Unauthorized');
       }
 
-      const user = await this.usersService.findOne(req.user._id.toString());
+      const userId = req.user._id.toString();
+      const otp = req.body.otp;
 
-      if (user.isLoggedIn) {
+      const existingActiveOffer =
+        await this.usersService.findActiveOfferByUserId(userId);
+
+      if (!existingActiveOffer) {
         return res.status(400).json({
-          responseMessage: 'لقد قمت بتسجيل الدخول مسبقاً!',
+          responseMessage: 'لا يوجد لديك عرض حاليًا!',
           responseCode: 400,
         });
       }
 
-      const otp = req.body.otp;
-
-      if (otp === user.otp) {
-        user.otp = '';
-        user.isLoggedIn = true;
-        await user.save();
+      if (otp === existingActiveOffer.otp) {
+        existingActiveOffer.otpVerified = true;
+        await existingActiveOffer.save();
 
         return res.status(200).json({
-          responseMessage: 'OTP مطابق',
+          responseMessage: 'تم التحقق من OTP بنجاح',
           responseCode: 200,
         });
       }
@@ -284,7 +334,7 @@ export class UsersController {
         responseCode: 400,
       });
     } catch (error) {
-      logger.error(`[verifyOtp] Error verifying OTP: ${error.message}`);
+      console.error(error);
       throw new UnauthorizedException('Invalid token');
     }
   }

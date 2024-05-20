@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "8631fc2d-a4b0-48fe-bba6-f551b5564389",
+		"name": "Phase 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16667387"
+	},
+	"item": [
+		{
+			"name": "offer",
+			"item": [
+				{
+					"name": "Get categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhNjUwMjFiZGNhYWEwNDJlNWNiNTQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzE1MTAzMDkzLCJleHAiOjE3MTUxMDY2OTN9.GumO-uWJmyD1EU15neh-ctXYYcvCssp0qq5sEOjQzrw",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/offer/categories",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"offer",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get offers by category name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjI5NDk0LCJleHAiOjE3MTYyMzMwOTR9.0IRKwLoc_CknCWh6lbsYCQalz5y8KB2O1u3d2s0GuD8",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/offer/getByCategory?category=بقالة&limit=2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"offer",
+								"getByCategory"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "بقالة"
+								},
+								{
+									"key": "limit",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get offers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjI5NDk0LCJleHAiOjE3MTYyMzMwOTR9.0IRKwLoc_CknCWh6lbsYCQalz5y8KB2O1u3d2s0GuD8",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/offer/getOffers",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"offer",
+								"getOffers"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendOTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjI5NDk0LCJleHAiOjE3MTYyMzMwOTR9.0IRKwLoc_CknCWh6lbsYCQalz5y8KB2O1u3d2s0GuD8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"brand\":\"carrefour\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/sendOtp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"sendOtp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjI5NDk0LCJleHAiOjE3MTYyMzMwOTR9.0IRKwLoc_CknCWh6lbsYCQalz5y8KB2O1u3d2s0GuD8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"otp\":\"1223\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/verifyOtp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"verifyOtp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "qr",
+			"item": [
+				{
+					"name": "ADMIN ONLY",
+					"item": [
+						{
+							"name": "Get all QRs",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "auth-token",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhOTA4ZGE2YTE3MWJiMzAwMjhlM2UiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTU3OTYyNzMsImV4cCI6MTcxNTc5OTg3M30.l1NzQsbH-rWCKnVWiT0OLbDipZeflHxLYzmPUQYcMw0",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url}}/qr/getAll",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"qr",
+										"getAll"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "scan QR code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/scan?userId=664b9524a87019ff11f435b4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"scan"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "664b9524a87019ff11f435b4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

@@ -9,19 +9,16 @@ export class User extends Document {
   @Prop({ required: true })
   email: string;
 
-  @Prop()
+  @Prop({ required: true })
   pin: string;
-
-  @Prop()
-  otp: string;
 
   @Prop({ required: true, maxlength: 11 })
   phoneNumber: string;
 
-  @Prop({ required: true }) //A or B
+  @Prop({ required: true, enum: ['A', 'B'] }) //A or B
   userType: string;
 
-  @Prop({ required: true, default: false }) //A or B
+  @Prop({ required: true, default: false })
   isLoggedIn: boolean;
 
   @Prop({ required: true, default: 'disable' })

@@ -8,11 +8,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { config } from '../config/config';
 import { QRService } from 'src/qr/qr.service';
 import { QrSchema } from 'src/qr/qr.schema';
+import { ActiveOfferSchema } from './activeOffer.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'Qr', schema: QrSchema }]),
+    MongooseModule.forFeature([
+      { name: 'ActiveOffer', schema: ActiveOfferSchema },
+    ]),
     JwtModule.register({
       secret: config.scanJwt,
     }),
