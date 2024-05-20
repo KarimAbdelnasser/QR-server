@@ -145,7 +145,6 @@ export class UsersController {
     }
 
     try {
-      console.log(queryUserId);
       const user = await this.usersService.findOne(queryUserId.toString());
 
       if (!user.isVerified) {
