@@ -10,6 +10,9 @@ export class Offer extends Document {
   category: string;
 
   @Prop({ required: true })
+  imgName: string;
+
+  @Prop({ required: true })
   categoryNumber: number;
 
   @Prop({ required: true })
