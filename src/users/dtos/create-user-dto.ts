@@ -21,9 +21,13 @@ export class CreateUserDto {
   userType: string;
 
   @IsNumber()
-  @Min(1000)
-  @Max(9999)
+  @Min(100000)
+  @Max(999999)
   pin: number;
+
+  @IsNumber()
+  @Length(8)
+  cardNumber: number;
 
   @IsBoolean()
   isVerified: boolean;

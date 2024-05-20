@@ -59,6 +59,7 @@ export class UsersController {
       body.phoneNumber,
       body.pin.toString(),
       body.userType,
+      body.cardNumber,
       body.otpStatus,
       body.isVerified,
       body.isAdmin,

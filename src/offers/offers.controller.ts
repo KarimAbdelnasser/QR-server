@@ -154,10 +154,9 @@ export class OffersController {
   @SkipAdmin()
   async getAllCategories(@Res() res, @Req() req) {
     try {
-      const user = await this.usersService.findOne(req.user._id);
+      // const user = await this.usersService.findOne(req.user._id);
 
       const categories = await this.offersService.getAllCategories(
-        user.userType,
       );
       return res.json({
         responseMessage: 'Categories retrieved successfully',

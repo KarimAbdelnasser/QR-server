@@ -75,13 +75,23 @@ export class OffersService {
     }
   }
 
-  async getAllCategories(userType: string): Promise<string[]> {
+  async getAllCategories(
+  ): Promise<{ category: string; categoryNumber: number }[]> {
     try {
       const categories = await this.offerModel
-        .distinct('category', { usersType: userType })
+        .find()
+        .select('category categoryNumber -_id')
         .exec();
 
-      logger.info(`[getAllCategories] Retrieved all categories: ${categories}`);
+      if (!categories.length) {
+        throw new NotFoundException(
+          'No categories found for the given user type.',
+        );
+      }
+
+      logger.info(
+        `[getAllCategories] Retrieved all categories: ${JSON.stringify(categories)}`,
+      );
 
       return categories;
     } catch (error) {
