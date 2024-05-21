@@ -24,11 +24,20 @@ export class Offer extends Document {
   @Prop({ required: true })
   offerDescription: string;
 
-  @Prop({ type: Date, expires: 0 }) // Set initial value to 0
+  @Prop({ type: Date, expires: 0 })
   expiresAt: Date;
 
   @Prop({ required: true })
   usersType: string;
+
+  @Prop()
+  branch: {
+    txt: string;
+    subscribe: string;
+    renewal: string;
+    year: string;
+    threeMonth: string;
+  }[];
 }
 
 export const OfferSchema = SchemaFactory.createForClass(Offer);
