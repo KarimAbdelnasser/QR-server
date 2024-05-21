@@ -41,9 +41,19 @@ export class QRService {
     }
   }
 
-  async saveQr(qrValue: string, userId: string, token: string) {
+  async saveQr(
+    qrValue: string,
+    userId: string,
+    cardNumber: number,
+    userName: string,
+  ) {
     try {
-      const qrCode = await this.qrModel.create({ userId, qrValue });
+      const qrCode = await this.qrModel.create({
+        userId,
+        qrValue,
+        cardNumber,
+        userName,
+      });
 
       const savedQr = await qrCode.save();
 
@@ -64,7 +74,7 @@ export class QRService {
   async getQrs(limit: number): Promise<Qr[]> {
     try {
       const qrs = await this.qrModel
-        .find({}, '-_id userId qrValue')
+        .find({}, '-_id userName cardNumber qrValue')
         .limit(limit)
         .exec();
 

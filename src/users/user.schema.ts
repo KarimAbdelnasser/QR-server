@@ -25,7 +25,7 @@ export class User extends Document {
   otpStatus: string;
 
   @Prop({ required: true })
-  cardNumber: number;
+  cardNumber: string;
 
   @Prop({ default: false })
   isVerified: boolean;

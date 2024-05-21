@@ -66,7 +66,7 @@ export class AuthService {
     id: string,
     isVerified: boolean,
     isAdmin: boolean,
-    cardNumber: number,
+    cardNumber: string,
   ): Promise<string> {
     try {
       const token = this.jwtService.sign(
