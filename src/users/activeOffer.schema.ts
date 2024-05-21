@@ -15,7 +15,7 @@ export class ActiveOffer extends Document {
   @Prop({ type: Boolean, default: false })
   otpVerified: boolean;
 
-  @Prop({ type: Date, default: Date.now, expires: 1800 })
+  @Prop({ type: Date, default: Date.now, expires: 900 })
   createdAt: Date;
 }
 
