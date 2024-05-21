@@ -162,6 +162,7 @@ export class UsersController {
         return res.status(400).json({
           responseMessage: 'الكارت غير صالح',
           responseCode: 400,
+          sign:false
         });
       }
 
@@ -176,6 +177,7 @@ export class UsersController {
         return res.header('auth-token', token).json({
           responseMessage: 'الكارت صالح',
           responseCode: 200,
+          sign:true,
           userType: user.userType,
           otpStatus: user.otpStatus,
           cardNumber: user.cardNumber,

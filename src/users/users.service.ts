@@ -151,10 +151,13 @@ export class UsersService {
 
       const activeOffer = await this.findActiveOfferByUserId(id);
 
+      let sign = true;
+
       if (!activeOffer) {
         return {
           responseMessage: 'لم يتم التصديق على اى عملية.',
           responseCode: 200,
+          sign: sign,
           userType: user.userType,
           otpStatus: user.otpStatus,
           cardNumber: user.cardNumber,
@@ -165,12 +168,11 @@ export class UsersService {
       let responseMessage;
       let responseCode = 200;
       let brand = activeOffer.brand;
-      let sign = true;
 
       if (activeOffer.otpVerified) {
-        responseMessage = `العملية مقبولة ل(${activeOffer.brand}) والكارت صالح.`;
+        responseMessage = `العملية مقبولة ل.`;
       } else {
-        responseMessage = `العملية غير مقبولة ل${activeOffer.brand} يرجى ادخال OTP مرة اخرى.`;
+        responseMessage = `العملية غير مقبولة ل`;
         sign = false;
       }
 
