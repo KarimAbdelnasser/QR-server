@@ -164,16 +164,21 @@ export class UsersService {
 
       let responseMessage;
       let responseCode = 200;
+      let brand = activeOffer.brand;
+      let sign = true;
 
       if (activeOffer.otpVerified) {
-        responseMessage = `العملية مقبولة ل${activeOffer.brand} والكارت صالح.`;
+        responseMessage = `العملية مقبولة ل(${activeOffer.brand}) والكارت صالح.`;
       } else {
-        responseMessage = `الكارت صالح والعملية غير مقبولة ل${activeOffer.brand} يرجى ادخال OTP مرة اخرى.`;
+        responseMessage = `العملية غير مقبولة ل${activeOffer.brand} يرجى ادخال OTP مرة اخرى.`;
+        sign = false;
       }
 
       return {
         responseMessage,
         responseCode,
+        sign: sign,
+        activeOfferBrand: brand,
         userType: user.userType,
         otpStatus: user.otpStatus,
         cardNumber: user.cardNumber,

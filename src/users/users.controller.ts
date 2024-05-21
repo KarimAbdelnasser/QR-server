@@ -273,10 +273,20 @@ export class UsersController {
           req.user._id.toString(),
         );
       if (existingActiveOffer) {
-        return res.status(400).json({
-          responseMessage: 'لقد قمت بالحصول على عرض اخر!',
-          responseCode: 400,
-        });
+        if (existingActiveOffer.otpVerified) {
+          return res.status(400).json({
+            responseMessage: 'لقد قمت بالحصول على عرض اخر!',
+            otpVerified: existingActiveOffer.otpVerified,
+            responseCode: 400,
+          });
+        } else {
+          return res.status(400).json({
+            responseMessage:
+              '(OTP) لقد قمت بالحصول على عرض اخر ولم تقم بتأكيد ال',
+            otpVerified: existingActiveOffer.otpVerified,
+            responseCode: 400,
+          });
+        }
       }
 
       const phoneNumber = req.user.phoneNumber;
@@ -304,7 +314,6 @@ export class UsersController {
       throw new UnauthorizedException('Invalid', error.message);
     }
   }
-
   @Post('/verifyOtp')
   @SkipAdmin()
   async verifyOtp(@Req() req, @Res() res) {
