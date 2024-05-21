@@ -170,7 +170,7 @@ export class UsersService {
       let brand = activeOffer.brand;
 
       if (activeOffer.otpVerified) {
-        responseMessage = `العملية مقبولة ل.`;
+        responseMessage = `العملية مقبولة ل`;
       } else {
         responseMessage = `العملية غير مقبولة ل`;
         sign = false;
