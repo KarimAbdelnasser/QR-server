@@ -74,6 +74,7 @@ export class UsersController {
       String(user.id),
       body.cardNumber,
       body.userName,
+      url,
     );
 
     res.header('auth-token', token).json({
@@ -176,6 +177,7 @@ export class UsersController {
           responseCode: 200,
           userType: user.userType,
           otpStatus: user.otpStatus,
+          cardNumber : user.cardNumber,
           token: token,
         });
       } else {

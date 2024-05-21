@@ -22,12 +22,12 @@ export class QRService {
 
       const qrCode = await QRCode.toBuffer(url);
 
-      const folderPath = path.join(__dirname, '..', 'images');
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
-      }
-      const qrCodeFilePath = path.join(folderPath, `qr_${id}.png`);
-      fs.writeFileSync(qrCodeFilePath, qrCode);
+      // const folderPath = path.join(__dirname, '..', 'images');
+      // if (!fs.existsSync(folderPath)) {
+      //   fs.mkdirSync(folderPath, { recursive: true });
+      // }
+      // const qrCodeFilePath = path.join(folderPath, `qr_${id}.png`);
+      // fs.writeFileSync(qrCodeFilePath, qrCode);
 
       logger.info('[generateQRCode] QR code generated and saved successfully');
 
@@ -46,6 +46,7 @@ export class QRService {
     userId: string,
     cardNumber: number,
     userName: string,
+    url: string,
   ) {
     try {
       const qrCode = await this.qrModel.create({
@@ -53,6 +54,7 @@ export class QRService {
         qrValue,
         cardNumber,
         userName,
+        url,
       });
 
       const savedQr = await qrCode.save();
@@ -74,7 +76,7 @@ export class QRService {
   async getQrs(limit: number): Promise<Qr[]> {
     try {
       const qrs = await this.qrModel
-        .find({}, '-_id userName cardNumber qrValue')
+        .find({}, '-_id userName cardNumber qrValue url')
         .limit(limit)
         .exec();
 

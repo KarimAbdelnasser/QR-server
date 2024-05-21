@@ -14,6 +14,9 @@ export class Qr extends Document {
 
   @Prop({ required: true })
   userName: string;
+
+  @Prop({ required: true })
+  url: string;
 }
 
 export const QrSchema = SchemaFactory.createForClass(Qr);

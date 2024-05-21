@@ -37,30 +37,30 @@ export class AuthService {
     }
   }
 
-  async generateScanJwtToken(
-    id: string,
-    isVerified: boolean,
-    isAdmin: boolean,
-    cardNumber: any,
-  ): Promise<string> {
-    try {
-      const token = this.jwtService.sign(
-        {
-          _id: String(id),
-          isVerified,
-          isAdmin,
-          cardNumber,
-        },
-        {
-          secret: config.scanJwt,
-        },
-      );
-      return token;
-    } catch (error) {
-      console.error(`Error generating scan JWT token: ${error.message}`);
-      throw new Error('Failed to generate scan JWT token');
-    }
-  }
+  // async generateScanJwtToken(
+  //   id: string,
+  //   isVerified: boolean,
+  //   isAdmin: boolean,
+  //   cardNumber: any,
+  // ): Promise<string> {
+  //   try {
+  //     const token = this.jwtService.sign(
+  //       {
+  //         _id: String(id),
+  //         isVerified,
+  //         isAdmin,
+  //         cardNumber,
+  //       },
+  //       {
+  //         secret: config.scanJwt,
+  //       },
+  //     );
+  //     return token;
+  //   } catch (error) {
+  //     console.error(`Error generating scan JWT token: ${error.message}`);
+  //     throw new Error('Failed to generate scan JWT token');
+  //   }
+  // }
 
   async generateAppJwtToken(
     id: string,
@@ -78,7 +78,6 @@ export class AuthService {
         },
         {
           secret: config.appJwt,
-          expiresIn: '1h',
         },
       );
       return token;
