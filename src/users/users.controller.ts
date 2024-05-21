@@ -71,7 +71,12 @@ export class UsersController {
 
     const qrCodeString = qrCode.toString('base64');
 
-    await this.qrService.saveQr(qrCodeString, String(user.id), token);
+    await this.qrService.saveQr(
+      qrCodeString,
+      String(user.id),
+      body.cardNumber,
+      body.userName,
+    );
 
     res.header('auth-token', token).json({
       userName: `${user.userName}`,

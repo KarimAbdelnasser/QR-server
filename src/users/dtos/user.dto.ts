@@ -20,7 +20,7 @@ export class UserDto {
   phoneNumber: string;
 
   @Expose()
-  cardNumber: number;
+  cardNumber: string;
 
   @Expose()
   isVerified: boolean;

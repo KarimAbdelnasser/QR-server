@@ -31,7 +31,7 @@ export class UsersService {
     phoneNumber: string,
     pin: string,
     userType: string,
-    cardNumber:number,
+    cardNumber: number,
     otpStatus?: string,
     isVerified?: boolean,
     isAdmin?: boolean,
@@ -44,7 +44,7 @@ export class UsersService {
       }
 
       // const generatedCard = await this.authService.generateUniqueCardNumber();
-      const generatedCard =cardNumber;
+      const generatedCard = cardNumber;
 
       let otpStatus;
 
@@ -70,7 +70,7 @@ export class UsersService {
         newUser.id,
         newUser.isVerified,
         newUser.isAdmin,
-        Number(generatedCard),
+        generatedCard.toString(),
       );
 
       const userDto: UserDto = {
