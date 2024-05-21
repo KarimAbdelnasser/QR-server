@@ -75,12 +75,21 @@ export class OffersService {
     }
   }
 
-  async getAllCategories(
-  ): Promise<{ category: string; categoryNumber: number }[]> {
+  async getAllCategories(): Promise<
+    { category: string; categoryNumber: number }[]
+  > {
     try {
       const categories = await this.offerModel
-        .find()
-        .select('category categoryNumber -_id')
+        .aggregate([
+          {
+            $group: {
+              _id: '$category',
+              categoryNumber: { $first: '$categoryNumber' },
+            },
+          },
+          { $sort: { categoryNumber: 1 } },
+          { $project: { _id: 0, category: '$_id', categoryNumber: 1 } },
+        ])
         .exec();
 
       if (!categories.length) {
