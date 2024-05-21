@@ -171,13 +171,14 @@ export class UsersController {
         user.isAdmin,
         user.cardNumber,
       );
+
       if (user.userType === 'A') {
         return res.header('auth-token', token).json({
           responseMessage: 'الكارت صالح',
           responseCode: 200,
           userType: user.userType,
           otpStatus: user.otpStatus,
-          cardNumber : user.cardNumber,
+          cardNumber: user.cardNumber,
           token: token,
         });
       } else {

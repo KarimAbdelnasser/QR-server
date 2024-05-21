@@ -157,6 +157,7 @@ export class UsersService {
           responseCode: 200,
           userType: user.userType,
           otpStatus: user.otpStatus,
+          cardNumber: user.cardNumber,
           token,
         };
       }
@@ -175,6 +176,7 @@ export class UsersService {
         responseCode,
         userType: user.userType,
         otpStatus: user.otpStatus,
+        cardNumber: user.cardNumber,
         token,
       };
     } catch (error) {
