@@ -6,6 +6,9 @@ export class ActiveOffer extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   userId: Types.ObjectId;
 
+  // @Prop({ type: Types.ObjectId, ref: 'Offer' })
+  // offerId: Types.ObjectId;
+
   @Prop({ required: true })
   brand: string;
 
