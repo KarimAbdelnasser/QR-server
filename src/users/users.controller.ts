@@ -26,8 +26,6 @@ import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
 import { AuthService } from './auth.service';
 // import commonLib from 'common-package';
-import { logger } from 'src/utility/logger';
-import { ActiveOffer } from './activeOffer.schema';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -49,15 +47,15 @@ export class UsersController {
       throw new ConflictException('email in use!');
     }
 
-    if (!body.pin) {
-      throw new BadRequestException('Bad request: Missing pin');
+    if (!body.pin || body.pin.length !== 6) {
+      throw new BadRequestException('Invalid pin: must be 6 digits long');
     }
-
+    
     const { user, token } = await this.usersService.create(
       body.userName,
       body.email,
       body.phoneNumber,
-      body.pin.toString(),
+      body.pin,
       body.userType,
       body.cardNumber,
       body.otpStatus,

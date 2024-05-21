@@ -3,8 +3,6 @@ import {
   IsNumber,
   IsString,
   Length,
-  Min,
-  Max,
   IsBoolean,
   MaxLength,
 } from 'class-validator';
@@ -20,10 +18,9 @@ export class CreateUserDto {
   @IsString()
   userType: string;
 
-  @IsNumber()
-  @Min(100000)
-  @Max(999999)
-  pin: number;
+  @IsString()
+  @Length(6, 6)
+  pin: string;
 
   @IsNumber()
   @Length(8)
