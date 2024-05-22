@@ -311,6 +311,7 @@ export class UsersController {
       const phoneNumber = req.user.phoneNumber;
 
       const otp = await this.authService.generateUniqueOtp();
+      console.log("🚀 ~ UsersController ~ sendOtp ~ otp:", otp)
 
       const msg = `OTP الخاص بك : ${otp}`;
 
