@@ -25,6 +25,7 @@ import { SkipAdmin } from '../decorators/skip-admin-guard.decorator';
 import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
 import { AuthService } from './auth.service';
+import { isValidObjectId } from 'mongoose';
 // import commonLib from 'common-package';
 
 @Controller('user')
@@ -153,6 +154,14 @@ export class UsersController {
   async scanQr(@Query('userId') queryUserId: string, @Req() req, @Res() res) {
     if (!queryUserId) {
       throw new UnauthorizedException('QueryUserId missing');
+    }
+
+    if (!isValidObjectId(queryUserId)) {
+      return res.status(401).json({
+        responseMessage: 'الكارت غير موجود',
+        responseCode: 401,
+        sign: false,
+      });
     }
 
     try {
