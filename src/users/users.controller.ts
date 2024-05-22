@@ -158,6 +158,14 @@ export class UsersController {
     try {
       const user = await this.usersService.findOne(queryUserId.toString());
 
+      if (!user) {
+        return res.status(400).json({
+          responseMessage: 'الكارت غير موجود',
+          responseCode: 400,
+          sign:false
+        });
+      }
+
       if (!user.isVerified) {
         return res.status(400).json({
           responseMessage: 'الكارت غير صالح',
