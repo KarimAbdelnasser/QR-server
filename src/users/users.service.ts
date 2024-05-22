@@ -157,7 +157,7 @@ export class UsersService {
         return {
           responseMessage: 'لم يتم التصديق على اى عملية.',
           responseCode: 200,
-          sign: sign,
+          sign: false,
           userType: user.userType,
           otpStatus: user.otpStatus,
           cardNumber: user.cardNumber,
