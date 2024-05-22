@@ -18,8 +18,10 @@ export class ActiveOffer extends Document {
   @Prop({ type: Boolean, default: false })
   otpVerified: boolean;
 
-  @Prop({ type: Date, default: Date.now, expires: 900 })
+  @Prop({ type: Date, default: Date.now})
   createdAt: Date;
 }
 
 export const ActiveOfferSchema = SchemaFactory.createForClass(ActiveOffer);
+
+ActiveOfferSchema.index({ createdAt: 1 }, { expireAfterSeconds: 900 });
