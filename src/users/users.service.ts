@@ -157,7 +157,7 @@ export class UsersService {
         return {
           responseMessage: 'لم يتم التصديق على اى عملية.',
           responseCode: 200,
-          sign: sign,
+          sign: false,
           userType: user.userType,
           otpStatus: user.otpStatus,
           cardNumber: user.cardNumber,
@@ -170,7 +170,7 @@ export class UsersService {
       let brand = activeOffer.brand;
 
       if (activeOffer.otpVerified) {
-        responseMessage = `العملية مقبولة ل.`;
+        responseMessage = `العملية مقبولة ل`;
       } else {
         responseMessage = `العملية غير مقبولة ل`;
         sign = false;
