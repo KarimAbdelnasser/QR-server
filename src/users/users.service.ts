@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ConflictException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -14,14 +13,15 @@ import { logger } from 'src/utility/logger';
 import { Qr } from 'src/qr/qr.schema';
 import { config } from 'src/config/config';
 import { ActiveOffer } from './activeOffer.schema';
+import { ActiveOtp } from './activeOtp.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Qr.name) private readonly qrModel: Model<Qr>,
-    @InjectModel(ActiveOffer.name)
-    private readonly activeOfferModel: Model<ActiveOffer>,
+    @InjectModel(ActiveOffer.name) private readonly activeOfferModel: Model<ActiveOffer>,
+    @InjectModel(ActiveOtp.name) private readonly activeOtpModel: Model<ActiveOtp>,
     private authService: AuthService,
   ) {}
 
@@ -101,6 +101,18 @@ export class UsersService {
     }
   }
 
+  async createActiveOtp(
+    userId: string,
+    otp: string,
+  ): Promise<ActiveOtp> {
+    const newActiveOtp = new this.activeOtpModel({
+      userId,
+      otp,
+      otpVerified: false,
+    });
+    return newActiveOtp.save();
+  }
+
   async createActiveOffer(
     userId: string,
     brand: string,
@@ -121,7 +133,7 @@ export class UsersService {
         throw new NotFoundException(`User with id ${id} not found`);
       }
 
-      logger.info(`findOne] Finding user with id: ${id}`);
+      logger.info(`[findOne] Finding user with id: ${id}`);
 
       return this.userModel.findById(id);
     } catch (error) {
@@ -134,7 +146,13 @@ export class UsersService {
   }
 
   async findActiveOfferByUserId(userId: string): Promise<ActiveOffer | null> {
+    logger.info(`[findActiveOfferByUserId] Finding activeOffer with userId: ${userId}`);
     return this.activeOfferModel.findOne({ userId }).exec();
+  }
+
+  async findActiveOtpByUserId(userId: string): Promise<ActiveOtp | null> {
+    logger.info(`[findActiveOtpByUserId] Finding activeOffer with userId: ${userId}`);
+    return this.activeOtpModel.findOne({ userId }).exec();
   }
 
   async returnCases(id: string, token: string) {
@@ -150,7 +168,6 @@ export class UsersService {
       }
 
       const activeOffer = await this.findActiveOfferByUserId(id);
-
       let sign = true;
 
       if (!activeOffer) {
@@ -194,26 +211,6 @@ export class UsersService {
     }
   }
 
-  // async findOneBySecret(secretKey: any) {
-  //   try {
-  //     if (!secretKey) {
-  //       throw new NotFoundException(`User not found!`);
-  //     }
-  //     const exist = await this.userModel.findOne({ secretKey: secretKey });
-  //     if (exist) {
-  //       return true;
-  //     }
-  //   } catch (error) {
-  //     logger.error(
-  //       `[findOneBySecret] Error find a user: ${(error as Error).message}`,
-  //     );
-
-  //     throw new InternalServerErrorException(
-  //       `Could not find : ${error.message}`,
-  //     );
-  //   }
-  // }
-
   async findOneByEmail(email: string) {
     try {
       if (!email) {
@@ -234,46 +231,46 @@ export class UsersService {
     }
   }
 
-  async saveOtp(id: string, otp: string) {
-    try {
-      const user = await this.userModel.findById(id);
-      if (!user) {
-        throw new NotFoundException(`User with id ${id} not found`);
-      }
+  // async saveOtp(id: string, otp: string) {
+  //   try {
+  //     const user = await this.userModel.findById(id);
+  //     if (!user) {
+  //       throw new NotFoundException(`User with id ${id} not found`);
+  //     }
 
-      // user.otp.push(otp);
+  //     // user.otp.push(otp);
 
-      return await user.save();
-    } catch (error) {
-      logger.error(
-        `[saveOtp]Error updating OTP for user: ${(error as Error).message}`,
-      );
-      throw new InternalServerErrorException(
-        `Failed to update OTP for user: ${error.message}`,
-      );
-    }
-  }
+  //     return await user.save();
+  //   } catch (error) {
+  //     logger.error(
+  //       `[saveOtp]Error updating OTP for user: ${(error as Error).message}`,
+  //     );
+  //     throw new InternalServerErrorException(
+  //       `Failed to update OTP for user: ${error.message}`,
+  //     );
+  //   }
+  // }
 
-  async usedOtp(userId: string, otp: string) {
-    try {
-      const user = await this.userModel.findById(userId);
+  // async usedOtp(userId: string, otp: string) {
+  //   try {
+  //     const user = await this.userModel.findById(userId);
 
-      if (!user) {
-        throw new NotFoundException(`User with id ${userId} not found`);
-      }
+  //     if (!user) {
+  //       throw new NotFoundException(`User with id ${userId} not found`);
+  //     }
 
-      // const isOtpUsed = user.otp.includes(otp);
+  //     // const isOtpUsed = user.otp.includes(otp);
 
-      // return isOtpUsed;
-    } catch (error) {
-      logger.error(
-        `[usedOtp]Error finding user or OTP: ${(error as Error).message}`,
-      );
-      throw new InternalServerErrorException(
-        `Failed to check OTP usage: ${error.message}`,
-      );
-    }
-  }
+  //     // return isOtpUsed;
+  //   } catch (error) {
+  //     logger.error(
+  //       `[usedOtp]Error finding user or OTP: ${(error as Error).message}`,
+  //     );
+  //     throw new InternalServerErrorException(
+  //       `Failed to check OTP usage: ${error.message}`,
+  //     );
+  //   }
+  // }
 
   async deactivateCard(email: string): Promise<User> {
     try {

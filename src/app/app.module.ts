@@ -10,6 +10,7 @@ import { AppJwtMiddleware } from 'src/middleware/app.jwt.middleware';
 import { QrModule } from 'src/qr/qr.module';
 import { OfferModule } from 'src/offers/offers.module';
 import { IsVerifiedMiddleware } from 'src/middleware/isVerified.middleware';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { IsVerifiedMiddleware } from 'src/middleware/isVerified.middleware';
     QrModule,
     OfferModule,
   ],
+  controllers: [AppController],
   providers: [AppService, { provide: 'Logger', useValue: logger }],
   exports: ['Logger'],
 })
@@ -29,16 +31,20 @@ export class AppModule {
     consumer
       .apply(AppJwtMiddleware)
       .exclude(
-        // { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
+        { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
         { path: 'user/scan', method: RequestMethod.GET },
+        { path: 'health', method: RequestMethod.GET },
+        { path: 'qr/getAll', method: RequestMethod.GET },
       )
       .forRoutes('*');
 
     consumer
       .apply(IsVerifiedMiddleware)
       .exclude(
-        // { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
+        { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
         { path: 'user/scan', method: RequestMethod.GET },
+        { path: 'health', method: RequestMethod.GET },
+        { path: 'qr/getAll', method: RequestMethod.GET },
       )
       .forRoutes('*');
 

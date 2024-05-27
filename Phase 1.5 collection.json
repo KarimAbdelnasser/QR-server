@@ -170,38 +170,6 @@
 			"name": "qr",
 			"item": [
 				{
-					"name": "ADMIN ONLY",
-					"item": [
-						{
-							"name": "Get all QRs",
-							"request": {
-								"auth": {
-									"type": "noauth"
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "auth-token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjNhOTA4ZGE2YTE3MWJiMzAwMjhlM2UiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3MTU3OTYyNzMsImV4cCI6MTcxNTc5OTg3M30.l1NzQsbH-rWCKnVWiT0OLbDipZeflHxLYzmPUQYcMw0",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "{{url}}/qr/getAll",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"qr",
-										"getAll"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "scan QR code",
 					"request": {
 						"method": "GET",
@@ -220,6 +188,161 @@
 									"key": "userId",
 									"value": "664b9524a87019ff11f435b4"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifyPin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pin\":\"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/verifyPin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"verifyPin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Get all QRs",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTU1ZGE4NzAxOWZmMTFmNDM1YzkiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjp0cnVlLCJjYXJkTnVtYmVyIjo2ODM0MzY4MzE0MzU3MjI3LCJpYXQiOjE3MTYyNzkwMTcsImV4cCI6MTcxNjI4MjYxN30.s0_XOReNQ5eaoknJiWaV-xG58jWixKTtl7aaBpPsS9A",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/qr/getAll",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"qr",
+								"getAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "first time logIn",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pin\":\"654321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/logIn",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"logIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "sendOtp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/user/sendUserOtp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"sendUserOtp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifyOtp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pin\":\"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/verifyUserOtp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"verifyUserOtp"
 							]
 						}
 					},
