@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from './user.schema';
@@ -9,14 +9,14 @@ import { config } from '../config/config';
 import { QRService } from 'src/qr/qr.service';
 import { QrSchema } from 'src/qr/qr.schema';
 import { ActiveOfferSchema } from './activeOffer.schema';
+import { ActiveOtpSchema } from './activeOtp.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'Qr', schema: QrSchema }]),
-    MongooseModule.forFeature([
-      { name: 'ActiveOffer', schema: ActiveOfferSchema },
-    ]),
+    MongooseModule.forFeature([{ name: 'ActiveOffer', schema: ActiveOfferSchema }]),
+    MongooseModule.forFeature([{ name: 'ActiveOtp', schema: ActiveOtpSchema }]),
     JwtModule.register({
       secret: config.scanJwt,
     }),

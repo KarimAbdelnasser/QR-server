@@ -9,7 +9,7 @@ export class User extends Document {
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, length: 6 ,default: "123456"})
   pin: string;
 
   @Prop({ required: true, maxlength: 11 })

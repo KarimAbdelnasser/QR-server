@@ -25,8 +25,8 @@ import { SkipAdmin } from '../decorators/skip-admin-guard.decorator';
 import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
 import { AuthService } from './auth.service';
+import commonLib from 'common-package';
 import { isValidObjectId } from 'mongoose';
-// import commonLib from 'common-package';
 
 @Controller('user')
 @Serialize(UserDto)
@@ -39,87 +39,94 @@ export class UsersController {
 
   // * ADMIN Routes
   @Post('/createCard')
-  // @SkipAdmin() // TODO remove it when production
-  @UseGuards(AdminAuthGuard) // TODO active in production
+  @SkipAdmin() // TODO remove it when production
+  // @UseGuards(AdminAuthGuard) // TODO active in production
   async createCard(@Body() body: CreateUserDto, @Res() res, @Req() req) {
-    const existUser = await this.usersService.findOneByEmail(req.body.email);
+    try{
+      const existUser = await this.usersService.findOneByEmail(req.body.email);
 
-    if (existUser) {
-      throw new ConflictException('email in use!');
+      if (existUser) {
+        throw new ConflictException('email in use!');
+      }
+      if (!body.pin || body.pin.length !== 6) {
+        throw new BadRequestException('Invalid pin: must be 6 digits!');
+      }
+  
+      const { user, token } = await this.usersService.create(
+        body.userName,
+        body.email,
+        body.phoneNumber,
+        body.pin,
+        body.userType,
+        body.cardNumber,
+        body.otpStatus,
+        body.isVerified,
+        body.isAdmin,
+      );
+  
+      const url = `${config.url}/valid?userId=${user.id}`;
+  
+      const qrCode = await this.qrService.generateQRCode(url, user.id.toString());
+  
+      const qrCodeString = qrCode.toString('base64');
+  
+      await this.qrService.saveQr(
+        qrCodeString,
+        String(user.id),
+        body.cardNumber,
+        body.userName,
+        url,
+      );
+  
+      res.header('auth-token', token).json({
+        userName: `${user.userName}`,
+        cardNumber: `${user.cardNumber}`,
+        token: token,
+        qrCode: qrCodeString,
+      });
+    }catch(error){
+      throw new InternalServerErrorException(error.message);
     }
-
-    if (!body.pin || body.pin.length !== 6) {
-      throw new BadRequestException('Invalid pin: must be 6 digits long');
-    }
-    
-    const { user, token } = await this.usersService.create(
-      body.userName,
-      body.email,
-      body.phoneNumber,
-      body.pin,
-      body.userType,
-      body.cardNumber,
-      body.otpStatus,
-      body.isVerified,
-      body.isAdmin,
-    );
-
-    const url = `${config.url}/valid?userId=${user.id}`;
-
-    const qrCode = await this.qrService.generateQRCode(url, user.id.toString());
-
-    const qrCodeString = qrCode.toString('base64');
-
-    await this.qrService.saveQr(
-      qrCodeString,
-      String(user.id),
-      body.cardNumber,
-      body.userName,
-      url,
-    );
-
-    res.header('auth-token', token).json({
-      userName: `${user.userName}`,
-      cardNumber: `${user.cardNumber}`,
-      token: token,
-      qrCode: qrCodeString,
-    });
   }
 
   @Post('/activateUser')
   // @SkipAdmin() // TODO remove it when production
   @UseGuards(AdminAuthGuard) // TODO active in production
   async verifyUser(@Body() body, @Res() res) {
-    const email = body.email;
+    try{
+      const email = body.email;
 
-    const user = await this.usersService.findOneByEmail(email);
-
-    if (!user) {
-      return res.status(400).json({
-        responseMessage: 'User not found',
-        responseCode: 400,
+      const user = await this.usersService.findOneByEmail(email);
+  
+      if (!user) {
+        return res.status(400).json({
+          responseMessage: 'User not found',
+          responseCode: 400,
+        });
+      }
+      if (user.isVerified) {
+        throw new BadRequestException('User is already activated');
+      }
+  
+      user.isVerified = true;
+  
+      await user.save();
+  
+      const token = await this.authService.generateAppJwtToken(
+        user.id,
+        user.isVerified,
+        user.isAdmin,
+        user.cardNumber,
+      );
+  
+      return res.json({
+        responseMessage: 'تم تفعيل الكارت',
+        responseCode: 200,
+        token: token,
       });
+    }catch(error){
+      throw new InternalServerErrorException(error.message);
     }
-    if (user.isVerified) {
-      throw new BadRequestException('User is already activated');
-    }
-
-    user.isVerified = true;
-
-    await user.save();
-
-    const token = await this.authService.generateAppJwtToken(
-      user.id,
-      user.isVerified,
-      user.isAdmin,
-      user.cardNumber,
-    );
-
-    return res.json({
-      responseMessage: 'تم تفعيل الكارت',
-      responseCode: 200,
-      token: token,
-    });
   }
 
   @Patch('/deactivate')
@@ -153,7 +160,7 @@ export class UsersController {
   @SkipAdmin()
   async scanQr(@Query('userId') queryUserId: string, @Req() req, @Res() res) {
     if (!queryUserId) {
-      throw new UnauthorizedException('QueryUserId missing');
+      throw new UnauthorizedException('[/scan] Unauthorized: Missing QueryUserId');
     }
 
     if (!isValidObjectId(queryUserId)) {
@@ -168,10 +175,10 @@ export class UsersController {
       const user = await this.usersService.findOne(queryUserId.toString());
 
       if (!user) {
-        return res.status(400).json({
+        return res.status(401).json({
           responseMessage: 'الكارت غير موجود',
-          responseCode: 400,
-          sign:false
+          responseCode: 401,
+          sign: false,
         });
       }
 
@@ -179,7 +186,7 @@ export class UsersController {
         return res.status(400).json({
           responseMessage: 'الكارت غير صالح',
           responseCode: 400,
-          sign:false
+          sign: false,
         });
       }
 
@@ -194,7 +201,7 @@ export class UsersController {
         return res.header('auth-token', token).json({
           responseMessage: 'الكارت صالح',
           responseCode: 200,
-          sign:true,
+          sign: true,
           userType: user.userType,
           otpStatus: user.otpStatus,
           cardNumber: user.cardNumber,
@@ -206,82 +213,174 @@ export class UsersController {
         return res.header('auth-token', token).json(returnJson);
       }
     } catch (error) {
-      throw new UnauthorizedException('Invalid QR Code: ', error.message);
+      throw new InternalServerErrorException('Invalid QR Code: ', error.message);
     }
   }
 
   @Post('/verifyPin')
   @SkipAdmin()
   async verifyPin(@Body() body, @Req() req, @Res() res) {
-    if (!req.user) {
-      throw new UnauthorizedException('Unauthorized: Missing user token');
-    }
-
-    const userId = req.user._id;
-
-    const enteredPin = body.pin;
-
-    const user = await this.usersService.findOne(userId);
-
-    const compare = await this.authService.comparePin(enteredPin, user.pin);
-
-    if (compare) {
-      return res.json({
-        responseMessage: 'الرقم الذي أدخلته مطابق جاري إعاده توجيهك',
-        responseCode: 200,
-      });
-    } else {
-      return res.status(400).json({
-        responseMessage: 'الرقم الذي أدخلته غير مطابق',
-        responseCode: 400,
-      });
+    try{
+      if (!req.user) {
+        throw new UnauthorizedException('[/verifyPin] Unauthorized: Missing user token');
+      }
+  
+      const userId = req.user._id;
+  
+      const enteredPin = body.pin;
+  
+      const user = await this.usersService.findOne(userId);
+  
+      const compare = await this.authService.comparePin(enteredPin, user.pin);
+  
+      if (compare) {
+        return res.json({
+          responseMessage: 'الرقم الذي أدخلته مطابق جاري إعاده توجيهك',
+          responseCode: 200,
+          isLoggedIn:user.isLoggedIn
+        });
+      } else {
+        return res.status(400).json({
+          responseMessage: 'الرقم الذي أدخلته غير مطابق',
+          responseCode: 400,
+        });
+      }
+    }catch(error){
+      throw new InternalServerErrorException(error.message);
     }
   }
 
-  // @Post('/logIn')
-  // @SkipAdmin()
-  // async logIn(@Req() req, @Res() res) {
-  //   try {
-  //     if (!req.user) {
-  //       throw new UnauthorizedException('Unauthorized');
-  //     }
+  @Post('/logIn')
+  @SkipAdmin()
+  async logIn(@Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('[/logIn] Unauthorized: Missing user token');
+      }
 
-  //     const user = await this.usersService.findOne(req.user._id.toString());
+      const user = await this.usersService.findOne(req.user._id.toString());
 
-  //     if (user.isLoggedIn) {
-  //       return res.status(400).json({
-  //         responseMessage: 'لقد قمت بإنشاء رقم سري من قبل!',
-  //         responseCode: 400,
-  //       });
-  //     }
+      if (user.isLoggedIn) {
+        return res.status(400).json({
+          responseMessage: 'لقد قمت بإنشاء رقم سري من قبل!',
+          responseCode: 400,
+        });
+      }
 
-  //     const hashedPin = await this.authService.hashPin(req.body.pin);
+      const hashedPin = await this.authService.hashPin(req.body.pin);
 
-  //     user.pin = hashedPin;
+      user.pin = hashedPin;
 
-  //     user.isLoggedIn = true;
+      user.isLoggedIn = true;
 
-  //     await user.save();
+      await user.save();
 
-  //     return res.status(200).json({
-  //       responseMessage: 'تم إنشاء الرقم السري',
-  //       responseCode: 200,
-  //     });
+      return res.status(200).json({
+        responseMessage: 'تم إنشاء الرقم السري',
+        responseCode: 200,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 
-  //     // ! Send OTP in message
-  //     // await commonLib.notifications.sendSMS(phoneNumber, otp, msg);
-  //     // console.log(`OTP ${otp}has been sent to ${phoneNumber}`, otp);
-  //   } catch (error) {
-  //     throw new UnauthorizedException('Invalid token');
-  //   }
-  // }
+  @Post('/sendUserOtp')
+  @SkipAdmin()
+  async sendUserOtp(@Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('[/sendUserOtp] Unauthorized: Missing user token');
+      }
+
+      // Check if the user has an active offer
+      const existingActiveOtp =
+        await this.usersService.findActiveOtpByUserId(
+          req.user._id.toString(),
+        );
+      if (existingActiveOtp&&!existingActiveOtp.otpVerified) {
+          return res.status(400).json({
+            responseMessage: ' لقد قمت بطلب رمز سابقاً لم ينتهى ولم تقم بتفعيله!',
+            responseCode: 400,
+        });
+      }
+
+      const user = await this.usersService.findOne(req.user._id.toString())
+
+      const phoneNumber = user.phoneNumber;
+      console.log("🚀 ~ UsersController ~ sendOtp ~ phoneNumber:", phoneNumber)
+
+      const otp = await this.authService.generateUniqueOtp();
+
+      console.log("🚀 ~ UsersController ~ sendOtp ~ otp:", otp)
+
+      const msg = `OTP الخاص بك : ${otp}`;   
+
+      await this.usersService.createActiveOtp(
+        req.user._id.toString(),
+        otp,
+      );
+
+      // Send OTP in message
+      await commonLib.notifications.sendSMS(phoneNumber, msg);
+      console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
+
+      return res.status(200).json({
+        responseMessage: 'تم إرسال OTP',
+        responseCode: 200,
+      });
+    } catch (error) {
+      console.log('-------------------------------------------------------')
+      console.log(error)
+      console.log('-------------------------------------------------------')
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  @Post('/verifyUserOtp')
+  @SkipAdmin()
+  async verifyUserOtp(@Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('[/verifyUserOtp] Unauthorized: Missing user token');
+      }
+
+      const userId = req.user._id.toString();
+      const otp = req.body.otp;
+
+      const existingActiveOtp =
+        await this.usersService.findActiveOtpByUserId(userId);
+
+      if (!existingActiveOtp) {
+        return res.status(400).json({
+          responseMessage: 'هذا الطلب غير موجود!',
+          responseCode: 400,
+        });
+      }
+
+      if (otp === existingActiveOtp.otp) {
+        await existingActiveOtp.deleteOne();
+
+        return res.status(200).json({
+          responseMessage: 'تم التحقق من OTP بنجاح.',
+          responseCode: 200,
+        });
+      }
+
+      return res.status(400).json({
+        responseMessage: 'غير مطابق OTP',
+        responseCode: 400,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 
   @Post('/sendOtp')
   @SkipAdmin()
   async sendOtp(@Req() req, @Res() res) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized');
+        throw new UnauthorizedException('[/sendOtp] Unauthorized: Missing user token');
       }
 
       const brand = req.body.brand;
@@ -308,14 +407,21 @@ export class UsersController {
         }
       }
 
-      const phoneNumber = req.user.phoneNumber;
+      const user = await this.usersService.findOne(req.user._id.toString())
+
+      if(user.otpStatus==='disable') {
+      throw new BadRequestException("This user can't get otp services!");
+      }
+
+      const phoneNumber = user.phoneNumber;
+      console.log("🚀 ~ UsersController ~ sendOtp ~ phoneNumber:", phoneNumber)
 
       const otp = await this.authService.generateUniqueOtp();
+
       console.log("🚀 ~ UsersController ~ sendOtp ~ otp:", otp)
 
-      const msg = `OTP الخاص بك : ${otp}`;
+      const msg = `OTP الخاص بك : ${otp}`;   
 
-      // Create ActiveOffer using ActiveOfferService
       await this.usersService.createActiveOffer(
         req.user._id.toString(),
         brand,
@@ -323,23 +429,27 @@ export class UsersController {
       );
 
       // Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, msg);
-      // console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
+      await commonLib.notifications.sendSMS(phoneNumber, msg);
+      console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
 
       return res.status(200).json({
         responseMessage: 'تم إرسال OTP',
         responseCode: 200,
       });
     } catch (error) {
-      throw new UnauthorizedException('Invalid', error.message);
+      console.log('-------------------------------------------------------')
+      console.log(error)
+      console.log('-------------------------------------------------------')
+      throw new InternalServerErrorException(error.message);
     }
   }
+
   @Post('/verifyOtp')
   @SkipAdmin()
   async verifyOtp(@Req() req, @Res() res) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized');
+        throw new UnauthorizedException('[/verifyOtp] Unauthorized: Missing user token');
       }
 
       const userId = req.user._id.toString();
@@ -370,8 +480,39 @@ export class UsersController {
         responseCode: 400,
       });
     } catch (error) {
-      console.error(error);
-      throw new UnauthorizedException('Invalid token');
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  @Post('/forgetPin')
+  @SkipAdmin()
+  async forgetPin(@Body() body, @Req() req, @Res() res) {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedException('[/forgetPin] Unauthorized: Missing user token');
+      }
+
+      const userId = req.user._id;
+      const newPin = body.newPin;
+
+      const user = await this.usersService.findOne(userId);
+
+      if (!user) {
+        return res.status(404).json({
+          responseMessage: 'المستخدم غير موجود',
+          responseCode: 404,
+        });
+      }
+
+      user.pin = await this.authService.hashPin(newPin);
+      await user.save();
+
+      return res.status(200).json({
+        responseMessage: 'تم إعادة تعيين رقم التعريف الشخصي بنجاح',
+        responseCode: 200,
+      });
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
     }
   }
 

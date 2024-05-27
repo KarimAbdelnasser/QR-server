@@ -10,15 +10,15 @@ import { QrSchema } from 'src/qr/qr.schema';
 import { AuthService } from 'src/users/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ActiveOfferSchema } from 'src/users/activeOffer.schema';
+import { ActiveOtpSchema } from 'src/users/activeOtp.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Offer', schema: OfferSchema }]),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     MongooseModule.forFeature([{ name: 'Qr', schema: QrSchema }]),
-    MongooseModule.forFeature([
-      { name: 'ActiveOffer', schema: ActiveOfferSchema },
-    ]),
+    MongooseModule.forFeature([{ name: 'ActiveOffer', schema: ActiveOfferSchema }]),
+    MongooseModule.forFeature([{ name: 'ActiveOtp', schema: ActiveOtpSchema }]),
   ],
   controllers: [OffersController],
   exports: [OffersService],

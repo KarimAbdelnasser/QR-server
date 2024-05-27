@@ -38,7 +38,7 @@ export class OffersController {
   async addOffer(@Body() body: CreateOfferDto, @Req() req, @Res() res) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized: Missing user token');
+        throw new UnauthorizedException('[/addOne] Unauthorized: Missing user token');
       }
 
       if (!req.body.expiresAt) {
@@ -64,11 +64,6 @@ export class OffersController {
         expiresAt,
       );
 
-      console.log(
-        '🚀 ~ OffersController ~ addOffer ~ newOffer:',
-        typeof newOffer,
-      );
-
       return res.json({
         responseMessage: 'Offer added successfully',
         responseCode: 200,
@@ -85,7 +80,7 @@ export class OffersController {
   async addOffers(@Body('offers') offers: Offer[], @Res() res, @Req() req) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized: Missing user token');
+        throw new UnauthorizedException('[/addMany] Unauthorized: Missing user token');
       }
 
       if (!offers || offers.length === 0) {
@@ -95,11 +90,6 @@ export class OffersController {
       const userId = req.user._id;
 
       const createdOffers = await this.offersService.addOffers(userId, offers);
-
-      console.log(
-        '🚀 ~ OffersController ~ addOffers ~ createdOffers:',
-        typeof createdOffers,
-      );
 
       return res.json({
         responseMessage: 'Offers added successfully',
@@ -122,7 +112,7 @@ export class OffersController {
   ) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized: Missing user token');
+        throw new UnauthorizedException('[/:id] Unauthorized: Missing user token');
       }
 
       const editedOffer = await this.offersService.editOffer(
@@ -156,13 +146,79 @@ export class OffersController {
     try {
       // const user = await this.usersService.findOne(req.user._id);
 
-      const categories = await this.offersService.getAllCategories(
-      );
+      // const categories = await this.offersService.getAllCategories();
+
+      // return res.json({
+      //   responseMessage: 'Categories retrieved successfully',
+      //   responseCode: 200,
+      //   data: categories,
+      // });
       return res.json({
-        responseMessage: 'Categories retrieved successfully',
-        responseCode: 200,
-        data: categories,
-      });
+        "responseMessage": "Categories retrieved successfully",
+        "responseCode": 200,
+        "data": [
+            {
+                "categoryNumber": 1,
+                "category": "المطاعم و الكافيهات"
+            },
+            {
+                "categoryNumber": 2,
+                "category": "الخدمات الطبية"
+            },
+            {
+                "categoryNumber": 3,
+                "category": "الفنادق"
+            },
+            {
+                "categoryNumber": 4,
+                "category": "البواخر السياحية"
+            },
+            {
+                "categoryNumber": 5,
+                "category": "الملابس والأحذية"
+            },
+            {
+                "categoryNumber": 6,
+                "category": "الحلويات"
+            },
+            {
+                "categoryNumber": 7,
+                "category": "مفروشات و اثاث و مستلزمات منزلية"
+            },
+            {
+                "categoryNumber": 8,
+                "category": "الأثاث المكتبي"
+            },
+            {
+                "categoryNumber": 9,
+                "category": "خدمات متنوعة"
+            },
+            {
+                "categoryNumber": 10,
+                "category": "الاجهزة الالكترونية"
+            },
+            {
+                "categoryNumber": 11,
+                "category": "خدمات السيارات"
+            },
+            {
+                "categoryNumber": 12,
+                "category": "صالات الالعاب الرياضية"
+            },
+            {
+                "categoryNumber": 13,
+                "category": "خدمات ترفيهية"
+            },
+            {
+                "categoryNumber": 14,
+                "category": "خدمات تعليمية"
+            },
+            {
+                "categoryNumber": 15,
+                "category": "تجميل و تصفيف"
+            }
+        ]
+    })
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -201,7 +257,7 @@ export class OffersController {
   ) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized: Missing user token');
+        throw new UnauthorizedException('[/getOffers] Unauthorized: Missing user token');
       }
 
       const user = await this.usersService.findOne(req.user._id);
@@ -230,7 +286,7 @@ export class OffersController {
     try {
       if (!brand) {
         throw new BadRequestException(
-          'Bad request: Missing brand query parameter',
+          '[/getByBrand] Bad request: Missing brand query parameter',
         );
       }
       const user = await this.usersService.findOne(req.user._id);
@@ -261,7 +317,7 @@ export class OffersController {
   ) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized: Missing user token');
+        throw new UnauthorizedException('[/getByCategory] Unauthorized: Missing user token');
       }
 
       if (!category) {
@@ -305,7 +361,7 @@ export class OffersController {
   ) {
     try {
       if (!req.user) {
-        throw new UnauthorizedException('Unauthorized: Missing user token');
+        throw new UnauthorizedException('[/getByCategoryNum] Unauthorized: Missing user token');
       }
 
       if (!categoryNum) {
