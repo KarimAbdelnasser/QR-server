@@ -284,7 +284,7 @@ export class UsersController {
     }
   }
 
-  @Post('/sendUserOtp')
+  @Get('/sendUserOtp')
   @SkipAdmin()
   async sendUserOtp(@Req() req, @Res() res) {
     try {

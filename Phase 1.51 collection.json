@@ -294,11 +294,11 @@
 				{
 					"name": "sendOtp",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRjYjI4MGM1MTFmOWFjMDljNDFhZWMiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2ODk0MTI4fQ.G9a9_2kv0AXJ3dGtzpY9qSSUc3psbON8cUyUTZrSiaU",
 								"type": "text"
 							}
 						],
@@ -322,13 +322,13 @@
 						"header": [
 							{
 								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRjYjI4MGM1MTFmOWFjMDljNDFhZWMiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2ODk0MTI4fQ.G9a9_2kv0AXJ3dGtzpY9qSSUc3psbON8cUyUTZrSiaU",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"pin\":\"1234\"\n}",
+							"raw": "{\n    \"otp\":\"8991\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -343,6 +343,39 @@
 							"path": [
 								"user",
 								"verifyUserOtp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgetPin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRjYjI4MGM1MTFmOWFjMDljNDFhZWMiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2ODk0MTI4fQ.G9a9_2kv0AXJ3dGtzpY9qSSUc3psbON8cUyUTZrSiaU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pin\":\"654321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/forgetPin",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"forgetPin"
 							]
 						}
 					},
