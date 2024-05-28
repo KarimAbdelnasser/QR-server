@@ -25,7 +25,7 @@ import { SkipAdmin } from '../decorators/skip-admin-guard.decorator';
 import { QRService } from '../qr/qr.service';
 import { config } from '../config/config';
 import { AuthService } from './auth.service';
-// import commonLib from 'common-package';
+import commonLib from 'common-package';
 import { isValidObjectId } from 'mongoose';
 
 @Controller('user')
@@ -321,7 +321,7 @@ export class UsersController {
       );
 
       // Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, msg);
+      await commonLib.notifications.sendSMS(phoneNumber, msg);
       console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
 
       return res.status(200).json({
@@ -429,7 +429,7 @@ export class UsersController {
       );
 
       // Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, msg);
+      await commonLib.notifications.sendSMS(phoneNumber, msg);
       console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
 
       return res.status(200).json({
@@ -490,6 +490,9 @@ export class UsersController {
     try {
       if (!req.user) {
         throw new UnauthorizedException('[/forgetPin] Unauthorized: Missing user token');
+      }
+      if(!body.newPin){
+        throw new BadRequestException("Missing newPin!");
       }
 
       const userId = req.user._id;

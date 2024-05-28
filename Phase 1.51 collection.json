@@ -355,13 +355,13 @@
 						"header": [
 							{
 								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRjYjI4MGM1MTFmOWFjMDljNDFhZWMiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2ODk0MTI4fQ.G9a9_2kv0AXJ3dGtzpY9qSSUc3psbON8cUyUTZrSiaU",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRmM2M3Y2JkODZmNGExMTA1NjJjNjgiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2OTIyNzc1fQ.ARd01VoFYxiyBJegqcc79HHXb7zU1khZlf6otsWJ6eU",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"pin\":\"654321\"\n}",
+							"raw": "{\n    \"newPin\":\"654321\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -382,6 +382,23 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/health",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
