@@ -202,6 +202,7 @@ export class UsersController {
           responseMessage: 'الكارت صالح',
           responseCode: 200,
           sign: true,
+          isLoggedIn: user.isLoggedIn,
           userType: user.userType,
           otpStatus: user.otpStatus,
           cardNumber: user.cardNumber,
@@ -305,6 +306,10 @@ export class UsersController {
       }
 
       const user = await this.usersService.findOne(req.user._id.toString())
+
+      if(!user.isLoggedIn){
+        throw new BadRequestException("لم تقم بتسجيل الدخول لأول مرة بعد!");
+      }
 
       const phoneNumber = user.phoneNumber;
       console.log("🚀 ~ UsersController ~ sendOtp ~ phoneNumber:", phoneNumber)
