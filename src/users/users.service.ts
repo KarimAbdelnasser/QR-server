@@ -155,7 +155,7 @@ export class UsersService {
     return this.activeOtpModel.findOne({ userId }).exec();
   }
 
-  async returnCases(id: string, token: string) {
+  async returnCases(id: string) {
     try {
       if (!id) {
         throw new NotFoundException(`User id missing!`);
@@ -177,8 +177,8 @@ export class UsersService {
           sign: false,
           userType: user.userType,
           otpStatus: user.otpStatus,
-          cardNumber: user.cardNumber,
-          token,
+          isLoggedIn: user.isLoggedIn,
+          cardNumber: user.cardNumber
         };
       }
 
@@ -200,8 +200,8 @@ export class UsersService {
         activeOfferBrand: brand,
         userType: user.userType,
         otpStatus: user.otpStatus,
-        cardNumber: user.cardNumber,
-        token,
+        isLoggedIn: user.isLoggedIn,
+        cardNumber: user.cardNumber
       };
     } catch (error) {
       logger.error(`[returnCases] Error : ${(error as Error).message}`);

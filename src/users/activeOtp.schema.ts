@@ -18,4 +18,4 @@ export class ActiveOtp extends Document {
 
 export const ActiveOtpSchema = SchemaFactory.createForClass(ActiveOtp);
 
-ActiveOtpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 900 });
+ActiveOtpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 300 });
