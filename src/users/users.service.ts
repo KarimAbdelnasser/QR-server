@@ -178,7 +178,10 @@ export class UsersService {
           userType: user.userType,
           otpStatus: user.otpStatus,
           isLoggedIn: user.isLoggedIn,
-          cardNumber: user.cardNumber
+          cardNumber: user.cardNumber,
+          nextStepData:{
+            userId:user.id
+          }
         };
       }
 
@@ -201,7 +204,10 @@ export class UsersService {
         userType: user.userType,
         otpStatus: user.otpStatus,
         isLoggedIn: user.isLoggedIn,
-        cardNumber: user.cardNumber
+        cardNumber: user.cardNumber,
+        nextStepData:{
+          userId:user.id
+        }
       };
     } catch (error) {
       logger.error(`[returnCases] Error : ${(error as Error).message}`);
