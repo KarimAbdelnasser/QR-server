@@ -211,7 +211,10 @@ export class UsersController {
           isLoggedIn: user.isLoggedIn,
           userType: user.userType,
           otpStatus: user.otpStatus,
-          cardNumber: user.cardNumber
+          cardNumber: user.cardNumber,
+          nextStepData:{
+            userId:user.id
+          }
         });
       } else {
         const returnJson = await this.usersService.returnCases(user.id);
@@ -383,7 +386,7 @@ export class UsersController {
       );
 
       // Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, msg);
+      // await commonLib.notifications.sendSMS(phoneNumber, msg, true);
       console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
 
       return res.status(200).json({
@@ -544,7 +547,7 @@ export class UsersController {
       );
 
       // Send OTP in message
-      // await commonLib.notifications.sendSMS(phoneNumber, msg);
+      // await commonLib.notifications.sendSMS(phoneNumber, msg, true);
       console.log(`OTP ${otp} has been sent to ${phoneNumber}`, msg);
 
       return res.status(200).json({
