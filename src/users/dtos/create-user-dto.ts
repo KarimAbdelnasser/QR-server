@@ -5,6 +5,7 @@ import {
   Length,
   IsBoolean,
   MaxLength,
+  Matches,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -20,6 +21,7 @@ export class CreateUserDto {
 
   @IsString()
   @Length(6, 6)
+  @Matches(/^\d{6}$/, { message: 'PIN يجب أن يكون من 6 أرقام' })
   pin: string;
 
   @IsNumber()

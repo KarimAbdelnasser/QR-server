@@ -33,8 +33,13 @@ export class AppModule {
       .exclude(
         { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
         { path: 'user/scan', method: RequestMethod.GET },
+        { path: 'user/logIn', method: RequestMethod.POST },
+        { path: 'user/verifyPin', method: RequestMethod.POST },
+        { path: 'user/sendUserOtp', method: RequestMethod.GET },
+        { path: 'user/verifyUserOtp', method: RequestMethod.POST },
+        { path: 'user/forgetPin', method: RequestMethod.POST },
         { path: 'health', method: RequestMethod.GET },
-        { path: 'qr/getAll', method: RequestMethod.GET },
+        { path: 'qr/getAll', method: RequestMethod.GET }, // TODO remove it in production
       )
       .forRoutes('*');
 
@@ -43,8 +48,13 @@ export class AppModule {
       .exclude(
         { path: 'user/createCard', method: RequestMethod.POST }, // TODO remove it in production
         { path: 'user/scan', method: RequestMethod.GET },
+        { path: 'user/logIn', method: RequestMethod.POST },
+        { path: 'user/verifyPin', method: RequestMethod.POST },
+        { path: 'user/sendUserOtp', method: RequestMethod.GET },
+        { path: 'user/verifyUserOtp', method: RequestMethod.POST },
+        { path: 'user/forgetPin', method: RequestMethod.POST },
         { path: 'health', method: RequestMethod.GET },
-        { path: 'qr/getAll', method: RequestMethod.GET },
+        { path: 'qr/getAll', method: RequestMethod.GET }, // TODO remove it in production
       )
       .forRoutes('*');
 

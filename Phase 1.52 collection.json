@@ -197,16 +197,10 @@
 					"name": "verifyPin",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"pin\":\"1234\"\n}",
+							"raw": "{\n    \"pin\":\"654321\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -214,13 +208,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/verifyPin",
+							"raw": "{{url}}/user/verifyPin?userId=66562f2fbadd1d756cfb541d",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
 								"verifyPin"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "66562f2fbadd1d756cfb541d"
+								}
 							]
 						}
 					},
@@ -262,13 +262,7 @@
 					"name": "first time logIn",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRiOTUyNGE4NzAxOWZmMTFmNDM1YjQiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6NzU2NTcyMTYyNDk3MTE5OSwiaWF0IjoxNzE2MjMwODM1LCJleHAiOjE3MTYyMzQ0MzV9.v7BTp0A_jFQbcP9SRaRg6xFEBlqNthnhZHlegr8wwjA",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"pin\":\"654321\"\n}",
@@ -279,13 +273,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/logIn",
+							"raw": "{{url}}/user/logIn?userId=66562f2fbadd1d756cfb541d",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
 								"logIn"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "66562f2fbadd1d756cfb541d"
+								}
 							]
 						}
 					},
@@ -295,21 +295,21 @@
 					"name": "sendOtp",
 					"request": {
 						"method": "GET",
-						"header": [
-							{
-								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRjYjI4MGM1MTFmOWFjMDljNDFhZWMiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2ODk0MTI4fQ.G9a9_2kv0AXJ3dGtzpY9qSSUc3psbON8cUyUTZrSiaU",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"url": {
-							"raw": "{{url}}/user/sendUserOtp",
+							"raw": "{{url}}/user/sendUserOtp?userId=66562f2fbadd1d756cfb541d",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
 								"sendUserOtp"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "66562f2fbadd1d756cfb541d"
+								}
 							]
 						}
 					},
@@ -319,16 +319,10 @@
 					"name": "verifyOtp",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRjYjI4MGM1MTFmOWFjMDljNDFhZWMiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2ODk0MTI4fQ.G9a9_2kv0AXJ3dGtzpY9qSSUc3psbON8cUyUTZrSiaU",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"otp\":\"8991\"\n}",
+							"raw": "{\n    \"otp\":\"3926\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -336,13 +330,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/verifyUserOtp",
+							"raw": "{{url}}/user/verifyUserOtp?userId=66562f2fbadd1d756cfb541d",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
 								"verifyUserOtp"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "66562f2fbadd1d756cfb541d"
+								}
 							]
 						}
 					},
@@ -352,13 +352,7 @@
 					"name": "ForgetPin",
 					"request": {
 						"method": "POST",
-						"header": [
-							{
-								"key": "auth-token",
-								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjRmM2M3Y2JkODZmNGExMTA1NjJjNjgiLCJpc1ZlcmlmaWVkIjp0cnVlLCJpc0FkbWluIjpmYWxzZSwiY2FyZE51bWJlciI6IjY4NTkwOTMxIiwiaWF0IjoxNzE2OTIyNzc1fQ.ARd01VoFYxiyBJegqcc79HHXb7zU1khZlf6otsWJ6eU",
-								"type": "text"
-							}
-						],
+						"header": [],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"newPin\":\"654321\"\n}",
@@ -369,13 +363,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/forgetPin",
+							"raw": "{{url}}/user/forgetPin?userId=66562f2fbadd1d756cfb541d",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
 								"forgetPin"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "66562f2fbadd1d756cfb541d"
+								}
 							]
 						}
 					},
